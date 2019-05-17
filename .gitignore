@@ -1,0 +1,15 @@
+node_modules
+*/log
+.vscode
+
+# Bucklescript generated
+/lib
+**/*.bs.js
+.merlin
+.bsb.lock
+
+# Jest generated
+/coverage
+
+# OS files
+.DS_Store

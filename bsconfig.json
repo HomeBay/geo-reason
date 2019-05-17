@@ -1,0 +1,29 @@
+{
+  "name": "geo-reason",
+  "bsc-flags": [],
+  "bs-dependencies": [
+    "bs-decode",
+    "relude"
+  ],
+  "bs-dev-dependencies": [
+    "@glennsl/bs-jest"
+  ],
+  "sources": [{
+    "dir": "./src",
+    "subdirs": true
+  }, {
+    "dir": "./__tests__",
+    "subdirs": true,
+    "type": "dev"
+  }],
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "refmt": 3,
+  "suffix": ".bs.js",
+  "warnings": {
+    "number": "+A-9",
+    "error": "+8+11"
+  }
+}

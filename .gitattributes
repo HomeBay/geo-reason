@@ -1,0 +1,3 @@
+*.re linguist-language=Reason
+*bs.js linguist-generated=true
+*.css linquist-generated=true
