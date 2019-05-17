@@ -51,7 +51,20 @@ let makeLabels = (~n, ~e, ~s, ~w, ~altitude=?, ()) =>
 
 let from2D = make(_, None);
 
-let encode = ({bounds, altitude}) => {
+let fromArray = xs =>
+  switch (Array.toList(xs)) {
+  | [w, s, e, n] => Some(makeLabels(~n, ~e, ~s, ~w, ()))
+  | [w, s, high, e, n, low] =>
+    let bounds = BoundingBox2D.{n, e, s, w};
+    let altitude = Some(AltitudeRange.make(high, low));
+    Some(make(bounds, altitude));
+  | _ => None
+  };
+
+let decode =
+  Decode.AsOption.(array(floatFromNumber) |> flatMap(fromArray >> const));
+
+let toArray = ({bounds, altitude}) => {
   let high = Option.map(v => v.AltitudeRange.highest, altitude);
   let low = Option.map(v => v.AltitudeRange.lowest, altitude);
 
@@ -59,5 +72,7 @@ let encode = ({bounds, altitude}) => {
   let sw = GeoJSON_Position.make(swPoint, high) |> GeoJSON_Position.toArray;
   let ne = GeoJSON_Position.make(nePoint, low) |> GeoJSON_Position.toArray;
 
-  Array.concat(sw, ne) |> Js.Json.(Array.map(number) >> array);
+  Array.concat(sw, ne);
 };
+
+let encode = box => toArray(box) |> Js.Json.(Array.map(number) >> array);

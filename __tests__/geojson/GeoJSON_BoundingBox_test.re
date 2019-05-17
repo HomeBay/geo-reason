@@ -72,6 +72,12 @@ describe("BoundingBox", () => {
     {| [-124.9, 24.4, 100.0, -66.8, 49.4, 0.0] |}
   ];
 
+  // So many invalid tests to make the coverage happy...
+  let invalidOne: Js.Json.t = [%raw {| [1.0] |}];
+  let invalidTwo: Js.Json.t = [%raw {| [1.0, 2.0] |}];
+  let invalidThree: Js.Json.t = [%raw {| [1.0, 2.0, 3.0] |}];
+  let invalidFive: Js.Json.t = [%raw {| [1.0, 2.0, 3.0, 4.0, 5.0] |}];
+
   test("make (no altitude)", () =>
     expect(box) |> toEqual(BoundingBox.{bounds, altitude: None})
   );
@@ -96,5 +102,34 @@ describe("BoundingBox", () => {
   test("encode (with altitude)", () =>
     expect(BoundingBox.encode(boxWithAltitude))
     |> toEqual(boxWithAltitudeJson)
+  );
+
+  test("decode success (no altitude)", () =>
+    expect(BoundingBox.decode(boxJson)) |> toEqual(Some(box))
+  );
+
+  test("decode success (with altitude)", () =>
+    expect(BoundingBox.decode(boxWithAltitudeJson))
+    |> toEqual(Some(boxWithAltitude))
+  );
+
+  test("decode failure (empty array)", () =>
+    expect(BoundingBox.decode(Js.Json.array([||]))) |> toEqual(None)
+  );
+
+  test("decode failure (singleton array)", () =>
+    expect(BoundingBox.decode(invalidOne)) |> toEqual(None)
+  );
+
+  test("decode failure (two-value array)", () =>
+    expect(BoundingBox.decode(invalidTwo)) |> toEqual(None)
+  );
+
+  test("decode failure (three-value array)", () =>
+    expect(BoundingBox.decode(invalidThree)) |> toEqual(None)
+  );
+
+  test("decode failure (five-value array)", () =>
+    expect(BoundingBox.decode(invalidFive)) |> toEqual(None)
   );
 });
