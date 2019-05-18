@@ -6,7 +6,10 @@
   "scripts": {
     "build": "bsb -make-world",
     "clean": "bsb -clean-world",
-    "test": "npm run clean && npm run build && jest --coverage",
+    "cleanbuild": "npm run clean && npm run build",
+    "test": "jest --coverage",
+    "cleantest": "npm run clean && npm run build && npm run test",
+    "coveralls": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "watch": "bsb -make-world -w",
     "start": "npm run watch"
   },
