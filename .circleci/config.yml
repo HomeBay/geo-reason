@@ -36,6 +36,6 @@ jobs:
       # run tests!
       - run: npm run clean
       - run: npm run build
-      - run: jest --coverage --coverageReporters=text-lcov | coveralls
+      - run: ./node_modules/.bin/jest --coverage --coverageReporters=text-lcov | coveralls
       - store_artifacts:
           path: coverage
