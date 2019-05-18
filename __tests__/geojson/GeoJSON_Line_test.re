@@ -65,4 +65,12 @@ describe("Line", () => {
   test("encode", () =>
     expect(Line.encode(line2)) |> toEqual(line2Json)
   );
+
+  test("eq", () =>
+    expect(Line.eq(line1, line1')) |> toBe(true)
+  );
+
+  test("not eq", () =>
+    expect(Line.eq(line1, line2)) |> toBe(false)
+  );
 });

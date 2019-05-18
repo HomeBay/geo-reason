@@ -26,8 +26,7 @@ let decode =
 let toList = ({first, second, rest}) => [first, second, ...rest];
 let toArray = v => toList(v) |> Array.fromList;
 
-// TODO:
-// let eq = (a, b) => List.eqBy(GeoJSON_Position.eq, toList(a), toList(b))
-
 let encode = data =>
   toArray(data) |> Array.map(GeoJSON_Position.encode) |> Js.Json.array;
+
+let eq = (a, b) => List.eqBy(GeoJSON_Position.eq, toList(a), toList(b))

@@ -32,8 +32,10 @@ describe("Position", () => {
   let longitude = (-105.1);
   let latlong = LatLong.makeLabels(~latitude, ~longitude);
   let pos = Position.fromLatLong(latlong);
+  let pos' = Position.make(latlong, None);
   let posWithAltitude =
     Position.makeLabels(~latitude, ~longitude, ~altitude=100.0, ());
+  let posWithAltitude' = Position.make(latlong, Some(100.0));
 
   let posJson: Js.Json.t = [%raw {| [ -105.1, 40.0 ] |}];
   let posWithAltitudeJson: Js.Json.t = [%raw {| [ -105.1, 40.0, 100.0] |}];
@@ -82,5 +84,31 @@ describe("Position", () => {
 
   test("encode (with altitude)", () =>
     expect(Position.encode(posWithAltitude)) |> toEqual(posWithAltitudeJson)
+  );
+
+  test("eq (no altitude)", () =>
+    expect(Position.eq(pos, pos')) |> toBe(true)
+  );
+
+  test("eq (with altitude)", () =>
+    expect(Position.eq(posWithAltitude, posWithAltitude')) |> toBe(true)
+  );
+
+  test("not eq (altitude-vs-none)", () =>
+    expect(Position.eq(pos, posWithAltitude)) |> toBe(false)
+  );
+
+  test("not eq (different altitude)", () =>
+    expect(
+      Position.eq(Position.make(latlong, Some(2.22)), posWithAltitude),
+    )
+    |> toBe(false)
+  );
+
+  test("not eq (different latlong)", () =>
+    expect(
+      Position.eq(Position.makeLabels(~latitude, ~longitude=0.0, ()), pos),
+    )
+    |> toBe(false)
   );
 });

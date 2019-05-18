@@ -51,3 +51,7 @@ let toArray = ({latlong, altitude}) => {
 };
 
 let encode = data => toArray(data) |> Js.Json.(Array.map(number) >> array);
+
+let eq = (a, b) =>
+  LatLong.eq(a.latlong, b.latlong)
+  && Option.eqBy((x, y) => x == y, a.altitude, b.altitude);
