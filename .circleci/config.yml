@@ -34,6 +34,8 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: npm run test
+      - run: npm run clean
+      - run: npm run build
+      - run: jest --coverage --coverageReporters=text-lcov | coveralls
       - store_artifacts:
           path: coverage
