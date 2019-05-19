@@ -18,6 +18,22 @@ module Shape = {
   let makeLabels = (~startEnd, ~second, ~third, ~rest=[], ()) =>
     make(startEnd, second, third, rest);
 
+  let fromArray = xs => {
+    let firstLastMatch =
+      Option.eqBy(GeoJSON_Position.eq, Array.head(xs), Array.last(xs));
+
+    switch (Array.init(xs) |> Option.getOrElse([||]) |> Array.toList) {
+    | [startEnd, second, third, ...rest] when firstLastMatch =>
+      Some(makeLabels(~startEnd, ~second, ~third, ~rest, ()))
+    | _ => None
+    };
+  };
+
+  let decode =
+    Decode.AsOption.(
+      array(GeoJSON_Position.decode) |> flatMap(fromArray >> const)
+    );
+
   let encode = ({startEnd, second, third, rest}) =>
     Array.(
       concat([|startEnd, second, third|], fromList(rest))
@@ -33,6 +49,17 @@ type t =
 
 let makeShape = (~startEnd, ~second, ~third, ~rest=?, ()) =>
   Shape(Shape.makeLabels(~startEnd, ~second, ~third, ~rest?, ()));
+
+let fromList =
+  fun
+  | [] => None
+  | [x] => Some(Shape(x))
+  | xs => Some(LinearRing(xs));
+
+let fromArray = xs => fromList(Array.toList(xs));
+
+let decode =
+  Decode.AsOption.(array(Shape.decode) |> flatMap(fromArray >> const));
 
 let toArray =
   fun

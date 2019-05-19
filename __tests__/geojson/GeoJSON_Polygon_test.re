@@ -43,6 +43,11 @@ describe("Polygon", () => {
       ),
     ]);
 
+  let onePointJson = [%raw {| [[[100.0, 0.0]]]|}];
+  let twoPointJson = [%raw {| [[[100.0, 0.0], [100.0, 0.0]]]|}];
+  let threePointJson = [%raw
+    {| [[[100.0, 0.0], [101.0, 0.0], [100.0, 0.0]]]|}
+  ];
   let triangleJson = [%raw
     {| [[[100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 0.0]]]|}
   ];
@@ -86,6 +91,31 @@ describe("Polygon", () => {
            },
          ),
        )
+  );
+
+  test("decode success (triangle)", () =>
+    expect(Polygon.decode(triangleJson)) |> toEqual(Some(triangle))
+  );
+
+  test("decode success (square)", () =>
+    expect(Polygon.decode(nestedSquaresJson))
+    |> toEqual(Some(nestedSquares))
+  );
+
+  test("decode failure (empty)", () =>
+    expect(Polygon.decode(Js.Json.array([||]))) |> toEqual(None)
+  );
+
+  test("decode failure (one point)", () =>
+    expect(Polygon.decode(onePointJson)) |> toEqual(None)
+  );
+
+  test("decode failure (two point)", () =>
+    expect(Polygon.decode(twoPointJson)) |> toEqual(None)
+  );
+
+  test("decode failure (three point)", () =>
+    expect(Polygon.decode(threePointJson)) |> toEqual(None)
   );
 
   test("encode (three points)", () =>

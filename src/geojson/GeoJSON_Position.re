@@ -41,9 +41,7 @@ let fromArray = xs =>
   };
 
 let decode =
-  Decode.AsOption.(
-    array(floatFromNumber) |> flatMap((xs, _) => fromArray(xs))
-  );
+  Decode.AsOption.(array(floatFromNumber) |> flatMap(fromArray >> const));
 
 let toArray = ({latlong, altitude}) => {
   let base = LatLong.toArray(latlong);
