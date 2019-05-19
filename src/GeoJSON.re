@@ -1,3 +1,2 @@
-module Position = GeoJSON_Position;
-module Line = GeoJSON_Line;
 module BoundingBox = GeoJSON_BoundingBox;
+module Geometry = GeoJSON_Geometry;

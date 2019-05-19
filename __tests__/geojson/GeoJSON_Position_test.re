@@ -1,8 +1,8 @@
 open Jest;
 open Expect;
 
-module Position = GeoJSON.Position;
-module LatLong = GeoJSON.Position.LatLong;
+module Position = GeoJSON.Geometry.Position;
+module LatLong = Position.LatLong;
 
 describe("LatLong", () => {
   let a = LatLong.makeLabels(~latitude=40.0, ~longitude=-105.1);

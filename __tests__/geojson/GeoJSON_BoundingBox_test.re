@@ -1,7 +1,7 @@
 open Jest;
 open Expect;
 
-module LatLong = GeoJSON.Position.LatLong;
+module LatLong = GeoJSON.Geometry.Position.LatLong;
 
 module BoundingBox = GeoJSON.BoundingBox;
 module BoundingBox2D = BoundingBox.BoundingBox2D;

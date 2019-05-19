@@ -1,8 +1,8 @@
 open Jest;
 open Expect;
 
-module Position = GeoJSON.Position;
-module Line = GeoJSON.Line;
+module Position = GeoJSON.Geometry.Position;
+module Line = GeoJSON.Geometry.Line;
 
 describe("Line", () => {
   let point1 = Position.makeLabels(~latitude=40.0, ~longitude=-123.45, ());
