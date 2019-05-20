@@ -11,6 +11,33 @@ type t =
   | MultiLineString(list(Line.t))
   | MultiPolygon(list(Polygon.t));
 
+let point = position => Point(position);
+let lineString = line => LineString(line);
+let polygon = poly => Polygon(poly);
+let multiPoint = points => MultiPoint(points);
+let multiLineString = lines => MultiLineString(lines);
+let multiPolygon = polygons => MultiPolygon(polygons);
+
+let decode = json => {
+  let decodeCoords = (innerDecode, constructor) =>
+    Decode.AsOption.(field("coordinates", innerDecode |> map(constructor)));
+
+  let decodeCoordsList = innerDecode =>
+    Decode.AsOption.list(innerDecode) |> decodeCoords;
+
+  let decodeType =
+    fun
+    | "Point" => decodeCoords(Position.decode, point)
+    | "LineString" => decodeCoords(Line.decode, lineString)
+    | "Polygon" => decodeCoords(Polygon.decode, polygon)
+    | "MultiPoint" => decodeCoordsList(Position.decode, multiPoint)
+    | "MultiLineString" => decodeCoordsList(Line.decode, multiLineString)
+    | "MultiPolygon" => decodeCoordsList(Polygon.decode, multiPolygon)
+    | _ => const(None);
+
+  json |> Decode.AsOption.(field("type", string) |> flatMap(decodeType));
+};
+
 let encode = data => {
   let pairCoords = (name, coords) => [
     ("type", Js.Json.string(name)),
