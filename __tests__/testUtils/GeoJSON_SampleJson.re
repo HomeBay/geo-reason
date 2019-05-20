@@ -240,3 +240,57 @@ let invalidGeometry: Js.Json.t = [%raw
     { "type": "foo", "coordinates": []}
   |}
 ];
+
+let geometryCollectionJson: Js.Json.t = [%raw
+  {|
+  {
+    "type": "GeometryCollection",
+    "geometries": [{
+      "type": "Point",
+      "coordinates": [100.0, 0.0]
+    }, {
+      "type": "LineString",
+      "coordinates": [
+        [101.0, 0.0],
+        [102.0, 1.0]
+      ]
+    }]
+  }
+ |}
+];
+
+let geometryCollection =
+  GeoJSON.{
+    data:
+      Data.GeometryCollection(
+        GeoJSON.Geometry.[
+          Point(Position.makeLabels(~longitude=100.0, ~latitude=0.0, ())),
+          LineString(
+            Line.twoPoints(
+              Position.makeLabels(~longitude=101.0, ~latitude=0.0, ()),
+              Position.makeLabels(~longitude=102.0, ~latitude=1.0, ()),
+            ),
+          ),
+        ],
+      ),
+    boundingBox: None,
+  };
+
+let geoBoundingBoxJson: Js.Json.t = [%raw
+  {|
+  {
+    "type": "Point",
+    "bbox": [-124.9, 24.4, -66.8, 49.4],
+    "coordinates": [100.0, 0.0]
+  }
+  |}
+];
+
+let goeBoundingBox =
+  GeoJSON.{
+    data: Data.Geometry(point),
+    boundingBox:
+      Some(
+        BoundingBox.makeLabels(~w=-124.9, ~s=24.4, ~e=-66.8, ~n=49.4, ()),
+      ),
+  };

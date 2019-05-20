@@ -20,7 +20,7 @@ let multiPolygon = polygons => MultiPolygon(polygons);
 
 let decode = json => {
   let decodeCoords = (innerDecode, constructor) =>
-    Decode.AsOption.(field("coordinates", innerDecode |> map(constructor)));
+    Decode.AsOption.(field("coordinates", map(constructor, innerDecode)));
 
   let decodeCoordsList = innerDecode =>
     Decode.AsOption.list(innerDecode) |> decodeCoords;
@@ -38,7 +38,7 @@ let decode = json => {
   json |> Decode.AsOption.(field("type", string) |> flatMap(decodeType));
 };
 
-let encode = data => {
+let encodeFields = data => {
   let pairCoords = (name, coords) => [
     ("type", Js.Json.string(name)),
     ("coordinates", coords),
@@ -47,17 +47,15 @@ let encode = data => {
   let pairList = (name, encode, xs) =>
     Array.(fromList(xs) |> map(encode) |> Js.Json.array) |> pairCoords(name);
 
-  let tuples =
-    switch (data) {
-    | Point(pos) => pairCoords("Point", Position.encode(pos))
-    | LineString(line) => pairCoords("LineString", Line.encode(line))
-    | Polygon(poly) => pairCoords("Polygon", Polygon.encode(poly))
-    | MultiPoint(points) => pairList("MultiPoint", Position.encode, points)
-    | MultiLineString(lines) =>
-      pairList("MultiLineString", Line.encode, lines)
-    | MultiPolygon(polygons) =>
-      pairList("MultiPolygon", Polygon.encode, polygons)
-    };
-
-  Js.(Dict.fromList(tuples) |> Json.object_);
+  switch (data) {
+  | Point(pos) => pairCoords("Point", Position.encode(pos))
+  | LineString(line) => pairCoords("LineString", Line.encode(line))
+  | Polygon(poly) => pairCoords("Polygon", Polygon.encode(poly))
+  | MultiPoint(points) => pairList("MultiPoint", Position.encode, points)
+  | MultiLineString(lines) => pairList("MultiLineString", Line.encode, lines)
+  | MultiPolygon(polygons) =>
+    pairList("MultiPolygon", Polygon.encode, polygons)
+  };
 };
+
+let encode = data => Js.(Dict.fromList(encodeFields(data)) |> Json.object_);
