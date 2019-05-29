@@ -15,11 +15,25 @@ describe("Feature", () => {
     |> toEqual(Some(SampleJson.featureNoProperties))
   );
 
-  // TODO: decode with properties
-  // TODO: decode with numeric id
+  test("decode (with properties, numeric id)", () =>
+    expect(Feature.decode(SampleJson.featureCompleteJson))
+    |> toEqual(Some(SampleJson.featureComplete))
+  );
 
   test("encode (empty)", () =>
     expect(Feature.encode(SampleJson.featureEmpty))
     |> toEqual(SampleJson.featureEmptyJson)
+  );
+
+  test("encode (complete)", () =>
+    expect(Feature.encode(SampleJson.featureComplete))
+    |> toEqual(SampleJson.featureCompleteJson)
+  );
+
+  // this functionality gets inlined by the compiler, so Jest thinks we're not
+  // testing it... this is just to make the coverage happy.
+  test("encode ID", () =>
+    expect(Feature.ID.(encode(StringID("a"))))
+    |> toEqual(Js.Json.string("a"))
   );
 });

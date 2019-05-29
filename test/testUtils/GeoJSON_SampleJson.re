@@ -328,3 +328,26 @@ let featureNoProperties =
       None,
     )
   );
+
+let featureCompleteJson = [%raw
+  {|
+  {
+    "type": "Feature",
+    "id": 1,
+    "geometry": {
+      "type": "Point",
+      "coordinates": [100.0, 0.0]
+    },
+    "properties": { "foo": "bar" }
+  }
+|}
+];
+
+let featureComplete =
+  GeoJSON.(
+    Feature.make(
+      Some(Feature.ID.NumberID(1.0)),
+      Some(point),
+      Some(Js.Dict.fromList([("foo", Js.Json.string("bar"))])),
+    )
+  );

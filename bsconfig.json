@@ -8,14 +8,17 @@
   "bs-dev-dependencies": [
     "@glennsl/bs-jest"
   ],
-  "sources": [{
-    "dir": "./src",
-    "subdirs": true
-  }, {
-    "dir": "./__tests__",
-    "subdirs": true,
-    "type": "dev"
-  }],
+  "sources": [
+    {
+      "dir": "./src",
+      "subdirs": true
+    },
+    {
+      "dir": "./test",
+      "subdirs": true,
+      "type": "dev"
+    }
+  ],
   "package-specs": {
     "module": "commonjs",
     "in-source": true
