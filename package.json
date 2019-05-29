@@ -2,7 +2,6 @@
   "name": "geo-reason",
   "version": "0.1.0",
   "description": "Reason types and functions for working with GeoJSON",
-  "main": "index.js",
   "scripts": {
     "build": "bsb -make-world",
     "clean": "bsb -clean-world",
@@ -13,8 +12,14 @@
     "watch": "bsb -make-world -w",
     "start": "npm run watch"
   },
-  "author": "",
+  "author": "Michael Martin-Smucker",
   "license": "MIT",
+  "homepage": "https://github.com/homebay/geo-reason",
+  "bugs": "https://github.com/homebay/geo-reason/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/homebay/geo-reason.git"
+  },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.8",
     "bs-platform": "^5.0.3",
