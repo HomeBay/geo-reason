@@ -294,3 +294,37 @@ let goeBoundingBox =
         BoundingBox.makeLabels(~w=-124.9, ~s=24.4, ~e=-66.8, ~n=49.4, ()),
       ),
   };
+
+let featureEmptySparseJson = [%raw {| { "type": "Feature" }|}];
+let featureEmptyJson = [%raw
+  {| { "type": "Feature", "properties": null, "geometry": null }|}
+];
+
+let featureEmpty = GeoJSON.Feature.makeLabels();
+
+let featureNoPropertiesJson = [%raw
+  {|
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [102.0, 0.5]
+    },
+    "id": "f2",
+    "properties": null
+  }
+  |}
+];
+
+let featureNoProperties =
+  GeoJSON.(
+    Feature.make(
+      Some(Feature.ID.StringID("f2")),
+      Some(
+        Geometry.point(
+          Geometry.Position.makeLabels(~latitude=0.5, ~longitude=102.0, ()),
+        ),
+      ),
+      None,
+    )
+  );

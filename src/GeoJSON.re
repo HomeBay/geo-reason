@@ -1,15 +1,18 @@
 open Relude.Globals;
 module BoundingBox = GeoJSON_BoundingBox;
 module Geometry = GeoJSON_Geometry;
+module Feature = GeoJSON_Feature;
 
 module Data = {
   type t =
     | Geometry(Geometry.t)
+    | Feature(Feature.t)
     | GeometryCollection(list(Geometry.t));
 
   let encodeFields =
     fun
     | Geometry(geo) => Geometry.encodeFields(geo)
+    | Feature(feature) => Feature.encodeFields(feature)
     | GeometryCollection(geos) => [
         ("type", Js.Json.string("GeometryCollection")),
         (
