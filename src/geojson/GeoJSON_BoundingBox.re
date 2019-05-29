@@ -51,18 +51,20 @@ let makeLabels = (~n, ~e, ~s, ~w, ~altitude=?, ()) =>
 
 let from2D = make(_, None);
 
-let fromArray = xs =>
+let fromArray = (xs, json) =>
   switch (Array.toList(xs)) {
-  | [w, s, e, n] => Some(makeLabels(~n, ~e, ~s, ~w, ()))
+  | [w, s, e, n] => Result.ok(makeLabels(~n, ~e, ~s, ~w, ()))
   | [w, s, high, e, n, low] =>
     let bounds = BoundingBox2D.{n, e, s, w};
     let altitude = Some(AltitudeRange.make(high, low));
-    Some(make(bounds, altitude));
-  | _ => None
+    Result.ok(make(bounds, altitude));
+  | _ => Result.error(Decode.ParseError.Val(`ExpectedValidOption, json))
   };
 
 let decode =
-  Decode.AsOption.(array(floatFromNumber) |> flatMap(fromArray >> const));
+  Decode.AsResult.OfParseError.(
+    array(floatFromNumber) |> flatMap(fromArray)
+  );
 
 let toArray = ({bounds, altitude}) => {
   let high = Option.map(v => v.AltitudeRange.highest, altitude);

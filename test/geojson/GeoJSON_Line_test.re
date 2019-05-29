@@ -1,5 +1,6 @@
 open Jest;
 open Expect;
+open Relude.Globals;
 
 module Position = GeoJSON.Geometry.Position;
 module Line = GeoJSON.Geometry.Line;
@@ -46,15 +47,25 @@ describe("Line", () => {
   );
 
   test("decode success", () =>
-    expect(Line.decode(line2Json)) |> toEqual(Some(line2))
+    expect(Line.decode(line2Json)) |> toEqual(Result.ok(line2))
   );
 
   test("decode failure (empty)", () =>
-    expect(Line.decode(Js.Json.array([||]))) |> toEqual(None)
+    expect(Line.decode(Js.Json.array([||])))
+    |> toEqual(
+         Result.error(
+           Decode.ParseError.Val(`ExpectedValidOption, Js.Json.array([||])),
+         ),
+       )
   );
 
   test("decode failure (singleton)", () =>
-    expect(Line.decode(invalidJson)) |> toEqual(None)
+    expect(Line.decode(invalidJson))
+    |> toEqual(
+         Result.error(
+           Decode.ParseError.Val(`ExpectedValidOption, invalidJson),
+         ),
+       )
   );
 
   test("toArray", () =>

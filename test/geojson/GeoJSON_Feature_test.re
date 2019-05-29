@@ -1,5 +1,6 @@
 open Jest;
 open Expect;
+open Relude.Globals;
 
 module Feature = GeoJSON.Feature;
 module SampleJson = GeoJSON_SampleJson;
@@ -7,17 +8,17 @@ module SampleJson = GeoJSON_SampleJson;
 describe("Feature", () => {
   test("decode (empty)", () =>
     expect(Feature.decode(SampleJson.featureEmptySparseJson))
-    |> toEqual(Some(SampleJson.featureEmpty))
+    |> toEqual(Result.ok(SampleJson.featureEmpty))
   );
 
   test("decode (no properties)", () =>
     expect(Feature.decode(SampleJson.featureNoPropertiesJson))
-    |> toEqual(Some(SampleJson.featureNoProperties))
+    |> toEqual(Result.ok(SampleJson.featureNoProperties))
   );
 
   test("decode (with properties, numeric id)", () =>
     expect(Feature.decode(SampleJson.featureCompleteJson))
-    |> toEqual(Some(SampleJson.featureComplete))
+    |> toEqual(Result.ok(SampleJson.featureComplete))
   );
 
   test("encode (empty)", () =>

@@ -32,16 +32,19 @@ let makeLabels = (~latitude, ~longitude, ~altitude=?, ()) =>
   make(LatLong.make(latitude, longitude), altitude);
 let fromLatLong = make(_, None);
 
-let fromArray = xs =>
+let fromArray = (xs, json) =>
   switch (Array.take(3, xs) |> Array.toList) {
-  | [longitude, latitude] => Some(makeLabels(~latitude, ~longitude, ()))
+  | [longitude, latitude] =>
+    Result.ok(makeLabels(~latitude, ~longitude, ()))
   | [longitude, latitude, altitude, ..._] =>
-    Some(makeLabels(~latitude, ~longitude, ~altitude, ()))
-  | _ => None
+    Result.ok(makeLabels(~latitude, ~longitude, ~altitude, ()))
+  | _ => Result.error(Decode.ParseError.Val(`ExpectedValidOption, json))
   };
 
 let decode =
-  Decode.AsOption.(array(floatFromNumber) |> flatMap(fromArray >> const));
+  Decode.AsResult.OfParseError.(
+    array(floatFromNumber) |> flatMap(fromArray)
+  );
 
 let toArray = ({latlong, altitude}) => {
   let base = LatLong.toArray(latlong);

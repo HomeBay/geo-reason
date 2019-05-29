@@ -1,11 +1,15 @@
 open Jest;
 open Expect;
+open Relude.Globals;
 
 module LatLong = GeoJSON.Geometry.Position.LatLong;
 
 module BoundingBox = GeoJSON.BoundingBox;
 module BoundingBox2D = BoundingBox.BoundingBox2D;
 module AltitudeRange = BoundingBox.AltitudeRange;
+
+let decodeFailure = json =>
+  Result.error(Decode.ParseError.Val(`ExpectedValidOption, json));
 
 describe("BoundingBox2D", () => {
   let (n, e, s, w) = (49.4, (-66.8), 24.4, (-124.9));
@@ -105,31 +109,36 @@ describe("BoundingBox", () => {
   );
 
   test("decode success (no altitude)", () =>
-    expect(BoundingBox.decode(boxJson)) |> toEqual(Some(box))
+    expect(BoundingBox.decode(boxJson)) |> toEqual(Result.ok(box))
   );
 
   test("decode success (with altitude)", () =>
     expect(BoundingBox.decode(boxWithAltitudeJson))
-    |> toEqual(Some(boxWithAltitude))
+    |> toEqual(Result.ok(boxWithAltitude))
   );
 
   test("decode failure (empty array)", () =>
-    expect(BoundingBox.decode(Js.Json.array([||]))) |> toEqual(None)
+    expect(BoundingBox.decode(Js.Json.array([||])))
+    |> toEqual(decodeFailure(Js.Json.array([||])))
   );
 
   test("decode failure (singleton array)", () =>
-    expect(BoundingBox.decode(invalidOne)) |> toEqual(None)
+    expect(BoundingBox.decode(invalidOne))
+    |> toEqual(decodeFailure(invalidOne))
   );
 
   test("decode failure (two-value array)", () =>
-    expect(BoundingBox.decode(invalidTwo)) |> toEqual(None)
+    expect(BoundingBox.decode(invalidTwo))
+    |> toEqual(decodeFailure(invalidTwo))
   );
 
   test("decode failure (three-value array)", () =>
-    expect(BoundingBox.decode(invalidThree)) |> toEqual(None)
+    expect(BoundingBox.decode(invalidThree))
+    |> toEqual(decodeFailure(invalidThree))
   );
 
   test("decode failure (five-value array)", () =>
-    expect(BoundingBox.decode(invalidFive)) |> toEqual(None)
+    expect(BoundingBox.decode(invalidFive))
+    |> toEqual(decodeFailure(invalidFive))
   );
 });

@@ -20,10 +20,12 @@ let multiPolygon = polygons => MultiPolygon(polygons);
 
 let decode = json => {
   let decodeCoords = (innerDecode, constructor) =>
-    Decode.AsOption.(field("coordinates", map(constructor, innerDecode)));
+    Decode.AsResult.OfParseError.(
+      field("coordinates", map(constructor, innerDecode))
+    );
 
   let decodeCoordsList = innerDecode =>
-    Decode.AsOption.list(innerDecode) |> decodeCoords;
+    Decode.AsResult.OfParseError.list(innerDecode) |> decodeCoords;
 
   let decodeType =
     fun
@@ -33,9 +35,15 @@ let decode = json => {
     | "MultiPoint" => decodeCoordsList(Position.decode, multiPoint)
     | "MultiLineString" => decodeCoordsList(Line.decode, multiLineString)
     | "MultiPolygon" => decodeCoordsList(Polygon.decode, multiPolygon)
-    | _ => const(None);
+    | _ => (
+        json =>
+          Result.error(Decode.ParseError.Val(`ExpectedValidOption, json))
+      );
 
-  json |> Decode.AsOption.(field("type", string) |> flatMap(decodeType));
+  json
+  |> Decode.AsResult.OfParseError.(
+       field("type", string) |> flatMap(decodeType)
+     );
 };
 
 let encodeFields = data => {

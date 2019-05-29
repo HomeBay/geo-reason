@@ -12,15 +12,15 @@ let makeLabels = (~first, ~second, ~rest=[], ()) =>
 
 let twoPoints = (first, second) => make(first, second, []);
 
-let fromArray = xs =>
+let fromArray = (xs, json) =>
   switch (Array.toList(xs)) {
-  | [first, second, ...rest] => Some(make(first, second, rest))
-  | _ => None
+  | [first, second, ...rest] => Result.ok(make(first, second, rest))
+  | _ => Result.error(Decode.ParseError.Val(`ExpectedValidOption, json))
   };
 
 let decode =
-  Decode.AsOption.(
-    array(GeoJSON_Position.decode) |> flatMap(fromArray >> const)
+  Decode.AsResult.OfParseError.(
+    array(GeoJSON_Position.decode) |> flatMap(fromArray)
   );
 
 let toList = ({first, second, rest}) => [first, second, ...rest];
@@ -29,4 +29,4 @@ let toArray = v => toList(v) |> Array.fromList;
 let encode = data =>
   toArray(data) |> Array.map(GeoJSON_Position.encode) |> Js.Json.array;
 
-let eq = (a, b) => List.eqBy(GeoJSON_Position.eq, toList(a), toList(b))
+let eq = (a, b) => List.eqBy(GeoJSON_Position.eq, toList(a), toList(b));

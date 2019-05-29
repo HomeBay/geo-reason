@@ -1,5 +1,6 @@
 open Jest;
 open Expect;
+open Relude.Globals;
 
 module Geometry = GeoJSON.Geometry;
 module SampleJson = GeoJSON_SampleJson;
@@ -7,44 +8,50 @@ module SampleJson = GeoJSON_SampleJson;
 describe("Geometry", () => {
   test("decode (point)", () =>
     expect(Geometry.decode(SampleJson.pointJson))
-    |> toEqual(Some(SampleJson.point))
+    |> toEqual(Result.ok(SampleJson.point))
   );
 
   test("decode (line)", () =>
     expect(Geometry.decode(SampleJson.lineJson))
-    |> toEqual(Some(SampleJson.line))
+    |> toEqual(Result.ok(SampleJson.line))
   );
 
   test("decode (polygon)", () =>
     expect(Geometry.decode(SampleJson.polygonJson))
-    |> toEqual(Some(SampleJson.polygon))
+    |> toEqual(Result.ok(SampleJson.polygon))
   );
 
   test("decode (polygon holes)", () =>
     expect(Geometry.decode(SampleJson.polygonHolesJson))
-    |> toEqual(Some(SampleJson.polygonHoles))
+    |> toEqual(Result.ok(SampleJson.polygonHoles))
   );
 
   test("decode (multi-point)", () =>
     expect(Geometry.decode(SampleJson.multiPointJson))
-    |> toEqual(Some(SampleJson.multiPoint))
+    |> toEqual(Result.ok(SampleJson.multiPoint))
   );
 
   test("decode (multi-line)", () =>
     expect(Geometry.decode(SampleJson.multiLineJson))
-    |> toEqual(Some(SampleJson.multiLine))
+    |> toEqual(Result.ok(SampleJson.multiLine))
   );
 
   test("decode (multi-polygon)", () =>
     expect(Geometry.decode(SampleJson.multiPolygonJson))
-    |> toEqual(Some(SampleJson.multiPolygon))
+    |> toEqual(Result.ok(SampleJson.multiPolygon))
   );
 
   test("decode (invalid type)", () =>
     expect(Geometry.decode(SampleJson.invalidGeometry))
-    |> toEqual(None)
+    |> toEqual(
+         Result.error(
+           Decode.ParseError.Val(
+             `ExpectedValidOption,
+             SampleJson.invalidGeometry,
+           ),
+         ),
+       )
   );
-
 
   test("encode (point)", () =>
     expect(Geometry.encode(SampleJson.point))

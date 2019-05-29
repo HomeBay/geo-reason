@@ -6,7 +6,7 @@ module ID = {
     | NumberID(float);
 
   let decode =
-    Decode.AsOption.(
+    Decode.AsResult.OfParseError.(
       alt(
         string |> map(v => StringID(v)),
         floatFromNumber |> map(v => NumberID(v)),
@@ -38,11 +38,11 @@ let makeLabels = (~id=?, ~geometry=?, ~properties=?, ()) =>
  * [1] https://tools.ietf.org/html/rfc7946#section-3.2
  */
 let decode =
-  Decode.AsOption.Pipeline.(
+  Decode.AsResult.OfParseError.Pipeline.(
     pure(make)
     |> optionalField("id", ID.decode)
     |> optionalField("geometry", GeoJSON_Geometry.decode)
-    |> optionalField("properties", dict(Option.pure))
+    |> optionalField("properties", dict(Result.pure))
   );
 
 /**

@@ -351,3 +351,125 @@ let featureComplete =
       Some(Js.Dict.fromList([("foo", Js.Json.string("bar"))])),
     )
   );
+
+// This is the exact example used in section 1.5 of the specification
+let featureCollectionJson = [%raw
+  {|
+  {
+    "type": "FeatureCollection",
+    "features": [{
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [102.0, 0.5]
+      },
+      "properties": {
+        "prop0": "value0"
+      }
+    }, {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [102.0, 0.0],
+          [103.0, 1.0],
+          [104.0, 0.0],
+          [105.0, 1.0]
+        ]
+      },
+      "properties": {
+        "prop0": "value0",
+        "prop1": 0.0
+      }
+    }, {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [100.0, 0.0],
+            [101.0, 0.0],
+            [101.0, 1.0],
+            [100.0, 1.0],
+            [100.0, 0.0]
+          ]
+        ]
+      },
+      "properties": {
+        "prop0": "value0",
+        "prop1": {
+          "this": "that"
+        }
+      }
+    }]
+  }
+ |}
+];
+
+let featureCollection =
+  GeoJSON.{
+    boundingBox: None,
+    data:
+      Data.FeatureCollection([
+        Feature.makeLabels(
+          ~geometry=
+            Geometry.(
+              Point(Position.makeLabels(~latitude=0.5, ~longitude=102.0, ()))
+            ),
+          ~properties=
+            Js.Dict.fromList([("prop0", Js.Json.string("value0"))]),
+          (),
+        ),
+        Feature.makeLabels(
+          ~geometry=
+            Geometry.(
+              LineString(
+                Line.make(
+                  Position.makeLabels(~latitude=0.0, ~longitude=102.0, ()),
+                  Position.makeLabels(~latitude=1.0, ~longitude=103.0, ()),
+                  [
+                    Position.makeLabels(~latitude=0.0, ~longitude=104.0, ()),
+                    Position.makeLabels(~latitude=1.0, ~longitude=105.0, ()),
+                  ],
+                ),
+              )
+            ),
+          ~properties=
+            Js.Dict.fromList([
+              ("prop0", Js.Json.string("value0")),
+              ("prop1", Js.Json.number(0.0)),
+            ]),
+          (),
+        ),
+        Feature.makeLabels(
+          ~geometry=
+            Geometry.(
+              Polygon(
+                Polygon.makeShape(
+                  ~startEnd=
+                    Position.makeLabels(~latitude=0.0, ~longitude=100.0, ()),
+                  ~second=
+                    Position.makeLabels(~latitude=0.0, ~longitude=101.0, ()),
+                  ~third=
+                    Position.makeLabels(~latitude=1.0, ~longitude=101.0, ()),
+                  ~rest=[
+                    Position.makeLabels(~latitude=1.0, ~longitude=100.0, ()),
+                  ],
+                  (),
+                ),
+              )
+            ),
+          ~properties=
+            Js.Dict.fromList([
+              ("prop0", Js.Json.string("value0")),
+              (
+                "prop1",
+                Js.Json.object_(
+                  Js.Dict.fromList([("this", Js.Json.string("that"))]),
+                ),
+              ),
+            ]),
+          (),
+        ),
+      ]),
+  };

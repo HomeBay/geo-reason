@@ -1,5 +1,6 @@
 open Jest;
 open Expect;
+open Relude.Globals;
 
 module Polygon = GeoJSON.Geometry.Polygon;
 module Position = GeoJSON.Geometry.Position;
@@ -94,28 +95,29 @@ describe("Polygon", () => {
   );
 
   test("decode success (triangle)", () =>
-    expect(Polygon.decode(triangleJson)) |> toEqual(Some(triangle))
+    expect(Polygon.decode(triangleJson)) |> toEqual(Result.ok(triangle))
   );
 
   test("decode success (square)", () =>
     expect(Polygon.decode(nestedSquaresJson))
-    |> toEqual(Some(nestedSquares))
+    |> toEqual(Result.ok(nestedSquares))
   );
 
   test("decode failure (empty)", () =>
-    expect(Polygon.decode(Js.Json.array([||]))) |> toEqual(None)
+    expect(Polygon.decode(Js.Json.array([||])) |> Result.getOk)
+    |> toEqual(None)
   );
 
   test("decode failure (one point)", () =>
-    expect(Polygon.decode(onePointJson)) |> toEqual(None)
+    expect(Polygon.decode(onePointJson) |> Result.getOk) |> toEqual(None)
   );
 
   test("decode failure (two point)", () =>
-    expect(Polygon.decode(twoPointJson)) |> toEqual(None)
+    expect(Polygon.decode(twoPointJson) |> Result.getOk) |> toEqual(None)
   );
 
   test("decode failure (three point)", () =>
-    expect(Polygon.decode(threePointJson)) |> toEqual(None)
+    expect(Polygon.decode(threePointJson) |> Result.getOk) |> toEqual(None)
   );
 
   test("encode (three points)", () =>

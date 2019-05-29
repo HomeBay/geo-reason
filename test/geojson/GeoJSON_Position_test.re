@@ -1,8 +1,12 @@
 open Jest;
 open Expect;
+open Relude.Globals;
 
 module Position = GeoJSON.Geometry.Position;
 module LatLong = Position.LatLong;
+
+let decodeFailure = json =>
+  Result.error(Decode.ParseError.Val(`ExpectedValidOption, json));
 
 describe("LatLong", () => {
   let a = LatLong.makeLabels(~latitude=40.0, ~longitude=-105.1);
@@ -61,22 +65,23 @@ describe("Position", () => {
   );
 
   test("decode success (no altitude)", () =>
-    expect(Position.decode(posJson)) |> toEqual(Some(pos))
+    expect(Position.decode(posJson)) |> toEqual(Result.ok(pos))
   );
 
   test("decode success (with altitude)", () =>
     expect(Position.decode(posWithAltitudeJson))
-    |> toEqual(Some(posWithAltitude))
+    |> toEqual(Result.ok(posWithAltitude))
   );
 
   test("decode empty failure", () =>
-    expect(Position.decode(Js.Json.array([||]))) |> toEqual(None)
+    expect(Position.decode(Js.Json.array([||])))
+    |> toEqual(decodeFailure(Js.Json.array([||])))
   );
 
-  test("decode singleton failure", () =>
-    expect(Position.decode(Js.Json.(array([|number(100.0)|]))))
-    |> toEqual(None)
-  );
+  test("decode singleton failure", () => {
+    let json = Js.Json.(array([|number(100.0)|]));
+    expect(Position.decode(json)) |> toEqual(decodeFailure(json));
+  });
 
   test("encode (no altitude)", () =>
     expect(Position.encode(pos)) |> toEqual(posJson)
