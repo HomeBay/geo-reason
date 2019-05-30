@@ -12,6 +12,12 @@ let pointJson: Js.Json.t = [%raw
   |}
 ];
 
+let latLong =
+  GeoJSON.Geometry.Position.LatLong.makeLabels(
+    ~longitude=100.2,
+    ~latitude=10.8,
+  );
+
 let point =
   GeoJSON.Geometry.(
     Point(Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()))
@@ -56,18 +62,18 @@ let polygonJson: Js.Json.t = [%raw
   |}
 ];
 
-let polygon =
+let shape =
   GeoJSON.Geometry.(
-    Polygon(
-      Polygon.makeShape(
-        ~startEnd=Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
-        ~second=Position.makeLabels(~longitude=101.0, ~latitude=0.0, ()),
-        ~third=Position.makeLabels(~longitude=101.0, ~latitude=1.0, ()),
-        ~rest=[Position.makeLabels(~longitude=100.0, ~latitude=1.0, ())],
-        (),
-      ),
+    Polygon.Shape.makeLabels(
+      ~startEnd=Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
+      ~second=Position.makeLabels(~longitude=101.0, ~latitude=0.0, ()),
+      ~third=Position.makeLabels(~longitude=101.0, ~latitude=1.0, ()),
+      ~rest=[Position.makeLabels(~longitude=100.0, ~latitude=1.0, ())],
+      (),
     )
   );
+
+let polygon = GeoJSON.Geometry.(Polygon(Polygon.Shape(shape)));
 
 let polygonHolesJson: Js.Json.t = [%raw
   {|

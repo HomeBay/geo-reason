@@ -18,6 +18,9 @@ let multiPoint = points => MultiPoint(points);
 let multiLineString = lines => MultiLineString(lines);
 let multiPolygon = polygons => MultiPolygon(polygons);
 
+let pointFromLatLong = latLong => Point(Position.fromLatLong(latLong));
+let polygonFromShape = shape => Polygon(Polygon.Shape(shape));
+
 let decode = json => {
   let decodeCoords = (innerDecode, constructor) =>
     Decode.AsResult.OfParseError.(

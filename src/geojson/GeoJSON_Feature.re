@@ -29,6 +29,8 @@ let make = (id, geometry, properties) => {id, geometry, properties};
 let makeLabels = (~id=?, ~geometry=?, ~properties=?, ()) =>
   make(id, geometry, properties);
 
+let fromGeometry = geometry => make(None, Some(geometry), None);
+
 /**
  * Decode JSON into a GeoJSON Feature. According to [section 3.2 of the spec][1]
  * a "Feature" is supposed to have "geometry" and "properties" fields, which may

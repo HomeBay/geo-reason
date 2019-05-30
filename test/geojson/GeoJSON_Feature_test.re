@@ -6,6 +6,17 @@ module Feature = GeoJSON.Feature;
 module SampleJson = GeoJSON_SampleJson;
 
 describe("Feature", () => {
+  test("fromGeometry", () =>
+    expect(Feature.fromGeometry(SampleJson.point))
+    |> toEqual(
+         Feature.{
+           id: None,
+           geometry: Some(SampleJson.point),
+           properties: None,
+         },
+       )
+  );
+
   test("decode (empty)", () =>
     expect(Feature.decode(SampleJson.featureEmptySparseJson))
     |> toEqual(Result.ok(SampleJson.featureEmpty))

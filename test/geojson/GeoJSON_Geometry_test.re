@@ -6,6 +6,16 @@ module Geometry = GeoJSON.Geometry;
 module SampleJson = GeoJSON_SampleJson;
 
 describe("Geometry", () => {
+  test("pointFromLatLong", () =>
+    expect(Geometry.pointFromLatLong(SampleJson.latLong))
+    |> toEqual(Geometry.(Point(Position.fromLatLong(SampleJson.latLong))))
+  );
+
+  test("polygonFromShape", () =>
+    expect(Geometry.polygonFromShape(SampleJson.shape))
+    |> toEqual(Geometry.(Polygon(Polygon.Shape(SampleJson.shape))))
+  );
+
   test("decode (point)", () =>
     expect(Geometry.decode(SampleJson.pointJson))
     |> toEqual(Result.ok(SampleJson.point))

@@ -66,6 +66,11 @@ type t = {
 let make = (data, boundingBox) => {data, boundingBox};
 let makeLabels = (~data, ~boundingBox=?, ()) => make(data, boundingBox);
 
+let fromGeometry = data => make(Data.Geometry(data), None);
+let fromGeometries = data => make(Data.GeometryCollection(data), None);
+let fromFeature = data => make(Data.Feature(data), None);
+let fromFeatures = data => make(Data.FeatureCollection(data), None);
+
 let decode =
   Decode.AsResult.OfParseError.(
     map2(make, Data.decode, optionalField("bbox", BoundingBox.decode))
