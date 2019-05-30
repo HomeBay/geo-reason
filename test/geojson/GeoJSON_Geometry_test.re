@@ -3,97 +3,97 @@ open Expect;
 open Relude.Globals;
 
 module Geometry = GeoJSON.Geometry;
-module SampleJson = GeoJSON_SampleJson;
+module Sample = GeoJSON_SampleData;
 
 describe("Geometry", () => {
   test("pointFromLatLong", () =>
-    expect(Geometry.pointFromLatLong(SampleJson.latLong))
-    |> toEqual(Geometry.(Point(Position.fromLatLong(SampleJson.latLong))))
+    expect(Geometry.pointFromLatLong(Sample.latLong))
+    |> toEqual(Geometry.(Point(Position.fromLatLong(Sample.latLong))))
   );
 
   test("polygonFromShape", () =>
-    expect(Geometry.polygonFromShape(SampleJson.shape))
-    |> toEqual(Geometry.(Polygon(Polygon.Shape(SampleJson.shape))))
+    expect(Geometry.polygonFromShape(Sample.shape))
+    |> toEqual(Geometry.(Polygon(Polygon.Shape(Sample.shape))))
   );
 
   test("decode (point)", () =>
-    expect(Geometry.decode(SampleJson.pointJson))
-    |> toEqual(Result.ok(SampleJson.point))
+    expect(Geometry.decode(Sample.pointJson))
+    |> toEqual(Result.ok(Sample.point))
   );
 
   test("decode (line)", () =>
-    expect(Geometry.decode(SampleJson.lineJson))
-    |> toEqual(Result.ok(SampleJson.line))
+    expect(Geometry.decode(Sample.lineJson))
+    |> toEqual(Result.ok(Sample.line))
   );
 
   test("decode (polygon)", () =>
-    expect(Geometry.decode(SampleJson.polygonJson))
-    |> toEqual(Result.ok(SampleJson.polygon))
+    expect(Geometry.decode(Sample.polygonJson))
+    |> toEqual(Result.ok(Sample.polygon))
   );
 
   test("decode (polygon holes)", () =>
-    expect(Geometry.decode(SampleJson.polygonHolesJson))
-    |> toEqual(Result.ok(SampleJson.polygonHoles))
+    expect(Geometry.decode(Sample.polygonHolesJson))
+    |> toEqual(Result.ok(Sample.polygonHoles))
   );
 
   test("decode (multi-point)", () =>
-    expect(Geometry.decode(SampleJson.multiPointJson))
-    |> toEqual(Result.ok(SampleJson.multiPoint))
+    expect(Geometry.decode(Sample.multiPointJson))
+    |> toEqual(Result.ok(Sample.multiPoint))
   );
 
   test("decode (multi-line)", () =>
-    expect(Geometry.decode(SampleJson.multiLineJson))
-    |> toEqual(Result.ok(SampleJson.multiLine))
+    expect(Geometry.decode(Sample.multiLineJson))
+    |> toEqual(Result.ok(Sample.multiLine))
   );
 
   test("decode (multi-polygon)", () =>
-    expect(Geometry.decode(SampleJson.multiPolygonJson))
-    |> toEqual(Result.ok(SampleJson.multiPolygon))
+    expect(Geometry.decode(Sample.multiPolygonJson))
+    |> toEqual(Result.ok(Sample.multiPolygon))
   );
 
   test("decode (invalid type)", () =>
-    expect(Geometry.decode(SampleJson.invalidGeometry))
+    expect(Geometry.decode(Sample.invalidGeometry))
     |> toEqual(
          Result.error(
            Decode.ParseError.Val(
              `ExpectedValidOption,
-             SampleJson.invalidGeometry,
+             Sample.invalidGeometry,
            ),
          ),
        )
   );
 
   test("encode (point)", () =>
-    expect(Geometry.encode(SampleJson.point))
-    |> toEqual(SampleJson.pointJson)
+    expect(Geometry.encode(Sample.point))
+    |> toEqual(Sample.pointJson)
   );
 
   test("encode (line)", () =>
-    expect(Geometry.encode(SampleJson.line)) |> toEqual(SampleJson.lineJson)
+    expect(Geometry.encode(Sample.line)) |> toEqual(Sample.lineJson)
   );
 
   test("encode (polygon)", () =>
-    expect(Geometry.encode(SampleJson.polygon))
-    |> toEqual(SampleJson.polygonJson)
+    expect(Geometry.encode(Sample.polygon))
+    |> toEqual(Sample.polygonJson)
   );
 
   test("encode (polygon holes)", () =>
-    expect(Geometry.encode(SampleJson.polygonHoles))
-    |> toEqual(SampleJson.polygonHolesJson)
+    expect(Geometry.encode(Sample.polygonHoles))
+    |> toEqual(Sample.polygonHolesJson)
   );
 
   test("encode (multi-point)", () =>
-    expect(Geometry.encode(SampleJson.multiPoint))
-    |> toEqual(SampleJson.multiPointJson)
+    expect(Geometry.encode(Sample.multiPoint))
+    |> toEqual(Sample.multiPointJson)
   );
 
   test("encode (multi-line)", () =>
-    expect(Geometry.encode(SampleJson.multiLine))
-    |> toEqual(SampleJson.multiLineJson)
+    expect(Geometry.encode(Sample.multiLine))
+    |> toEqual(Sample.multiLineJson)
   );
 
   test("encode (multi-polygon)", () =>
-    expect(Geometry.encode(SampleJson.multiPolygon))
-    |> toEqual(SampleJson.multiPolygonJson)
+    expect(Geometry.encode(Sample.multiPolygon))
+    |> toEqual(Sample.multiPolygonJson)
   );
 });

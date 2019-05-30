@@ -3,43 +3,39 @@ open Expect;
 open Relude.Globals;
 
 module Feature = GeoJSON.Feature;
-module SampleJson = GeoJSON_SampleJson;
+module Sample = GeoJSON_SampleData;
 
 describe("Feature", () => {
   test("fromGeometry", () =>
-    expect(Feature.fromGeometry(SampleJson.point))
+    expect(Feature.fromGeometry(Sample.point))
     |> toEqual(
-         Feature.{
-           id: None,
-           geometry: Some(SampleJson.point),
-           properties: None,
-         },
+         Feature.{id: None, geometry: Some(Sample.point), properties: None},
        )
   );
 
   test("decode (empty)", () =>
-    expect(Feature.decode(SampleJson.featureEmptySparseJson))
-    |> toEqual(Result.ok(SampleJson.featureEmpty))
+    expect(Feature.decode(Sample.featureEmptySparseJson))
+    |> toEqual(Result.ok(Sample.featureEmpty))
   );
 
   test("decode (no properties)", () =>
-    expect(Feature.decode(SampleJson.featureNoPropertiesJson))
-    |> toEqual(Result.ok(SampleJson.featureNoProperties))
+    expect(Feature.decode(Sample.featureNoPropertiesJson))
+    |> toEqual(Result.ok(Sample.featureNoProperties))
   );
 
   test("decode (with properties, numeric id)", () =>
-    expect(Feature.decode(SampleJson.featureCompleteJson))
-    |> toEqual(Result.ok(SampleJson.featureComplete))
+    expect(Feature.decode(Sample.featureCompleteJson))
+    |> toEqual(Result.ok(Sample.featureComplete))
   );
 
   test("encode (empty)", () =>
-    expect(Feature.encode(SampleJson.featureEmpty))
-    |> toEqual(SampleJson.featureEmptyJson)
+    expect(Feature.encode(Sample.featureEmpty))
+    |> toEqual(Sample.featureEmptyJson)
   );
 
   test("encode (complete)", () =>
-    expect(Feature.encode(SampleJson.featureComplete))
-    |> toEqual(SampleJson.featureCompleteJson)
+    expect(Feature.encode(Sample.featureComplete))
+    |> toEqual(Sample.featureCompleteJson)
   );
 
   // this functionality gets inlined by the compiler, so Jest thinks we're not

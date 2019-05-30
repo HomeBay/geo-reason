@@ -2,31 +2,31 @@ open Jest;
 open Expect;
 open Relude.Globals;
 
-module SampleJson = GeoJSON_SampleJson;
+module Sample = GeoJSON_SampleData;
 
 describe("GeoJSON", () => {
   test("fromGeometry", () =>
-    expect(GeoJSON.fromGeometry(SampleJson.point))
+    expect(GeoJSON.fromGeometry(Sample.point))
     |> toEqual(
-         GeoJSON.{data: Data.Geometry(SampleJson.point), boundingBox: None},
+         GeoJSON.{data: Data.Geometry(Sample.point), boundingBox: None},
        )
   );
 
   test("fromGeometries", () =>
-    expect(GeoJSON.fromGeometries([SampleJson.point]))
+    expect(GeoJSON.fromGeometries([Sample.point]))
     |> toEqual(
          GeoJSON.{
-           data: Data.GeometryCollection([SampleJson.point]),
+           data: Data.GeometryCollection([Sample.point]),
            boundingBox: None,
          },
        )
   );
 
   test("fromFeature", () =>
-    expect(GeoJSON.fromFeature(SampleJson.featureComplete))
+    expect(GeoJSON.fromFeature(Sample.featureComplete))
     |> toEqual(
          GeoJSON.{
-           data: Data.Feature(SampleJson.featureComplete),
+           data: Data.Feature(Sample.featureComplete),
            boundingBox: None,
          },
        )
@@ -34,17 +34,14 @@ describe("GeoJSON", () => {
 
   test("fromFeatureCollection", () =>
     expect(
-      GeoJSON.fromFeatures([
-        SampleJson.featureEmpty,
-        SampleJson.featureComplete,
-      ]),
+      GeoJSON.fromFeatures([Sample.featureEmpty, Sample.featureComplete]),
     )
     |> toEqual(
          GeoJSON.{
            data:
              Data.FeatureCollection([
-               SampleJson.featureEmpty,
-               SampleJson.featureComplete,
+               Sample.featureEmpty,
+               Sample.featureComplete,
              ]),
            boundingBox: None,
          },
@@ -52,57 +49,55 @@ describe("GeoJSON", () => {
   );
 
   test("decode (Point Geometry, with bbox)", () =>
-    expect(GeoJSON.decode(SampleJson.geoBoundingBoxJson))
-    |> toEqual(Result.ok(SampleJson.goeBoundingBox))
+    expect(GeoJSON.decode(Sample.geoBoundingBoxJson))
+    |> toEqual(Result.ok(Sample.goeBoundingBox))
   );
 
   test("decode (Feature, no bbox)", () =>
-    expect(GeoJSON.decode(SampleJson.featureCompleteJson))
+    expect(GeoJSON.decode(Sample.featureCompleteJson))
     |> toEqual(
          Result.ok(
            GeoJSON.(
-             makeLabels(~data=Data.Feature(SampleJson.featureComplete), ())
+             makeLabels(~data=Data.Feature(Sample.featureComplete), ())
            ),
          ),
        )
   );
 
   test("decode (GeometryCollection, no bbox)", () =>
-    expect(GeoJSON.Data.decode(SampleJson.geometryCollectionJson))
-    |> toEqual(Result.ok(SampleJson.geometryCollection.GeoJSON.data))
+    expect(GeoJSON.Data.decode(Sample.geometryCollectionJson))
+    |> toEqual(Result.ok(Sample.geometryCollection.GeoJSON.data))
   );
 
   test("decode (FeatureCollection, no bbox)", () =>
-    expect(GeoJSON.Data.decode(SampleJson.featureCollectionJson))
-    |> toEqual(Result.ok(SampleJson.featureCollection.GeoJSON.data))
+    expect(GeoJSON.Data.decode(Sample.featureCollectionJson))
+    |> toEqual(Result.ok(Sample.featureCollection.GeoJSON.data))
   );
 
   test("encode (Point Geometry, with bbox)", () =>
-    expect(GeoJSON.encode(SampleJson.goeBoundingBox))
-    |> toEqual(SampleJson.geoBoundingBoxJson)
+    expect(GeoJSON.encode(Sample.goeBoundingBox))
+    |> toEqual(Sample.geoBoundingBoxJson)
   );
 
   test("encode (Feature, no bbox)", () =>
     expect(
-      GeoJSON.(
-        encode(make(Data.Feature(SampleJson.featureComplete), None))
-      ),
+      GeoJSON.(encode(make(Data.Feature(Sample.featureComplete), None))),
     )
-    |> toEqual(SampleJson.featureCompleteJson)
+    |> toEqual(Sample.featureCompleteJson)
   );
 
   test("encode (Point Geometry, no bbox)", () =>
-    expect(GeoJSON.(encode(make(Data.Geometry(SampleJson.point), None))))
-    |> toEqual(SampleJson.pointJson)
+    expect(GeoJSON.(encode(make(Data.Geometry(Sample.point), None))))
+    |> toEqual(Sample.pointJson)
   );
 
   test("encode (GeometryCollection, no bbox)", () =>
-    expect(GeoJSON.encode(SampleJson.geometryCollection))
-    |> toEqual(SampleJson.geometryCollectionJson)
+    expect(GeoJSON.encode(Sample.geometryCollection))
+    |> toEqual(Sample.geometryCollectionJson)
   );
 
   test("encode (Feature Collection, no bbox)", () =>
-    expect(GeoJSON.encode(SampleJson.featureCollection))
-    |> toEqual(SampleJson.featureCollectionJson)
+    expect(GeoJSON.encode(Sample.featureCollection))
+    |> toEqual(Sample.featureCollectionJson)
   );
 });
