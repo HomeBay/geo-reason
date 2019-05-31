@@ -39,7 +39,7 @@ If you've worked with GeoJSON in its JSON form, you've probably noticed that it'
 
 These are valid coordinates for a polygon in GeoJSON... three layers of array (and it gets worse for multi-polygons), and a bunch of unlabeled numbers. By contrast, the `GeoReason` version is a bit more verbose, but much harder to get wrong:
 
-```reasonml
+```reason
 let polygon =
   GeoJSON.Geometry.(
     Polygon(
