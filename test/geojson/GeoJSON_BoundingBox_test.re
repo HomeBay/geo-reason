@@ -15,6 +15,7 @@ describe("BoundingBox2D", () => {
   let (n, e, s, w) = (49.4, (-66.8), 24.4, (-124.9));
   let box = BoundingBox2D.make(n, e, s, w);
   let box' = BoundingBox2D.makeLabels(~n, ~e, ~s, ~w);
+  let boxb = BoundingBox2D.make(1.0, 2.0, -1.0, -2.0);
 
   test("make", () =>
     expect(box) |> toEqual(BoundingBox2D.{n, e, s, w})
@@ -38,6 +39,50 @@ describe("BoundingBox2D", () => {
 
   test("sw", () =>
     expect(BoundingBox2D.sw(box)) |> toEqual(LatLong.make(s, w))
+  );
+
+  test("centerLat", () =>
+    expect(BoundingBox2D.centerLat(boxb)) |> toEqual(0.0)
+  );
+
+  test("centerLon", () =>
+    expect(BoundingBox2D.centerLon(boxb)) |> toEqual(0.0)
+  );
+
+  test("fromManyPoints", () =>
+    expect(
+      BoundingBox2D.fromManyPoints(
+        LatLong.makeLabels(~latitude=0.0, ~longitude=0.0),
+        [
+          LatLong.makeLabels(~latitude=1.0, ~longitude=20.0),
+          LatLong.makeLabels(~latitude=-3.0, ~longitude=-40.0),
+        ],
+      ),
+    )
+    |> toEqual(BoundingBox2D.{n: 1.0, e: 20.0, s: (-3.0), w: (-40.0)})
+  );
+
+  test("minSideSize", () =>
+    expect(BoundingBox2D.minSideSize(boxb)) |> toEqual(2.)
+  );
+
+  test("ensureMinSize", () =>
+    expect(BoundingBox2D.ensureMinSize(10.0, boxb))
+    |> toEqual(BoundingBox2D.make(5.0, 5.0, -5.0, -5.0))
+  );
+
+  test("pad", () =>
+    expect(BoundingBox2D.pad(0.5, boxb))
+    |> toEqual(BoundingBox2D.make(3.0, 4.0, -3.0, -4.0))
+  );
+
+  test("wrap", () =>
+    expect(BoundingBox2D.(wrap({n: 0.0, e: 185.0, s: 0.0, w: (-185.0)})))
+    |> toEqual(BoundingBox2D.{n: 0.0, e: (-175.0), s: 0.0, w: 175.0})
+  );
+
+  test("wrap (unnecessary)", () =>
+    expect(BoundingBox2D.wrap(boxb)) |> toEqual(boxb)
   );
 });
 

@@ -2,6 +2,7 @@
   "name": "geo-reason",
   "bsc-flags": [],
   "bs-dependencies": [
+    "bs-abstract",
     "bs-decode",
     "relude"
   ],
