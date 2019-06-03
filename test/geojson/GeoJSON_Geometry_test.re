@@ -18,12 +18,12 @@ describe("Geometry", () => {
 
   test("decode (point)", () =>
     expect(Geometry.decode(Sample.pointJson))
-    |> toEqual(Result.ok(Sample.point))
+    |> toEqual(Result.ok(Sample.pointGeometry))
   );
 
   test("decode (line)", () =>
     expect(Geometry.decode(Sample.lineJson))
-    |> toEqual(Result.ok(Sample.line))
+    |> toEqual(Result.ok(Sample.lineGeometry))
   );
 
   test("decode (polygon)", () =>
@@ -33,7 +33,7 @@ describe("Geometry", () => {
 
   test("decode (polygon holes)", () =>
     expect(Geometry.decode(Sample.polygonHolesJson))
-    |> toEqual(Result.ok(Sample.polygonHoles))
+    |> toEqual(Result.ok(Sample.polygonHolesGeometry))
   );
 
   test("decode (multi-point)", () =>
@@ -48,7 +48,7 @@ describe("Geometry", () => {
 
   test("decode (multi-polygon)", () =>
     expect(Geometry.decode(Sample.multiPolygonJson))
-    |> toEqual(Result.ok(Sample.multiPolygon))
+    |> toEqual(Result.ok(Sample.multiPolygonGeometry))
   );
 
   test("decode (invalid type)", () =>
@@ -64,21 +64,20 @@ describe("Geometry", () => {
   );
 
   test("encode (point)", () =>
-    expect(Geometry.encode(Sample.point))
+    expect(Geometry.encode(Sample.pointGeometry))
     |> toEqual(Sample.pointJson)
   );
 
   test("encode (line)", () =>
-    expect(Geometry.encode(Sample.line)) |> toEqual(Sample.lineJson)
+    expect(Geometry.encode(Sample.lineGeometry)) |> toEqual(Sample.lineJson)
   );
 
   test("encode (polygon)", () =>
-    expect(Geometry.encode(Sample.polygon))
-    |> toEqual(Sample.polygonJson)
+    expect(Geometry.encode(Sample.polygon)) |> toEqual(Sample.polygonJson)
   );
 
   test("encode (polygon holes)", () =>
-    expect(Geometry.encode(Sample.polygonHoles))
+    expect(Geometry.encode(Sample.polygonHolesGeometry))
     |> toEqual(Sample.polygonHolesJson)
   );
 
@@ -93,7 +92,7 @@ describe("Geometry", () => {
   );
 
   test("encode (multi-polygon)", () =>
-    expect(Geometry.encode(Sample.multiPolygon))
+    expect(Geometry.encode(Sample.multiPolygonGeometry))
     |> toEqual(Sample.multiPolygonJson)
   );
 });

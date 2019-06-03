@@ -18,10 +18,12 @@ let latLong =
     ~latitude=10.8,
   );
 
-let point =
-  GeoJSON.Geometry.(
-    Point(Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()))
-  );
+let pointPosition =
+  GeoJSON.Geometry.Position.makeLabels(~longitude=100.0, ~latitude=0.0, ());
+
+let pointGeometry = GeoJSON.Geometry.Point(pointPosition);
+
+let pointGeoJson = GeoJSON.fromGeometry(pointGeometry);
 
 let lineJson: Js.Json.t = [%raw
   {|
@@ -37,13 +39,13 @@ let lineJson: Js.Json.t = [%raw
 
 let line =
   GeoJSON.Geometry.(
-    LineString(
-      Line.twoPoints(
-        Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
-        Position.makeLabels(~longitude=101.0, ~latitude=1.0, ()),
-      ),
+    Line.twoPoints(
+      Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
+      Position.makeLabels(~longitude=101.0, ~latitude=1.0, ()),
     )
   );
+
+let lineGeometry = GeoJSON.Geometry.(LineString(line));
 
 let polygonJson: Js.Json.t = [%raw
   {|
@@ -101,25 +103,25 @@ let polygonHolesJson: Js.Json.t = [%raw
 
 let polygonHoles =
   GeoJSON.Geometry.(
-    Polygon(
-      Polygon.(
-        LinearRing([
-          Shape.make(
-            Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
-            Position.makeLabels(~longitude=101.0, ~latitude=0.0, ()),
-            Position.makeLabels(~longitude=101.0, ~latitude=1.0, ()),
-            [Position.makeLabels(~longitude=100.0, ~latitude=1.0, ())],
-          ),
-          Shape.make(
-            Position.makeLabels(~longitude=100.8, ~latitude=0.8, ()),
-            Position.makeLabels(~longitude=100.8, ~latitude=0.2, ()),
-            Position.makeLabels(~longitude=100.2, ~latitude=0.2, ()),
-            [Position.makeLabels(~longitude=100.2, ~latitude=0.8, ())],
-          ),
-        ])
-      ),
+    Polygon.(
+      LinearRing([
+        Shape.make(
+          Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
+          Position.makeLabels(~longitude=101.0, ~latitude=0.0, ()),
+          Position.makeLabels(~longitude=101.0, ~latitude=1.0, ()),
+          [Position.makeLabels(~longitude=100.0, ~latitude=1.0, ())],
+        ),
+        Shape.make(
+          Position.makeLabels(~longitude=100.8, ~latitude=0.8, ()),
+          Position.makeLabels(~longitude=100.8, ~latitude=0.2, ()),
+          Position.makeLabels(~longitude=100.2, ~latitude=0.2, ()),
+          [Position.makeLabels(~longitude=100.2, ~latitude=0.8, ())],
+        ),
+      ])
     )
   );
+
+let polygonHolesGeometry = GeoJSON.Geometry.Polygon(polygonHoles);
 
 let multiPointJson = [%raw
   {|
@@ -133,13 +135,13 @@ let multiPointJson = [%raw
   |}
 ];
 
+let multiPointFirst =
+  GeoJSON.Geometry.Position.makeLabels(~longitude=100.0, ~latitude=0.0, ());
+let multiPointSecond =
+  GeoJSON.Geometry.Position.makeLabels(~longitude=101.0, ~latitude=1.0, ());
+
 let multiPoint =
-  GeoJSON.Geometry.(
-    MultiPoint([
-      Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
-      Position.makeLabels(~longitude=101.0, ~latitude=1.0, ()),
-    ])
-  );
+  GeoJSON.Geometry.(MultiPoint([multiPointFirst, multiPointSecond]));
 
 let multiLineJson = [%raw
   {|
@@ -208,38 +210,36 @@ let multiPolygonJson: Js.Json.t = [%raw
   |}
 ];
 
-let multiPolygon =
-  GeoJSON.Geometry.(
-    MultiPolygon([
-      Polygon.makeShape(
-        ~startEnd=Position.makeLabels(~longitude=102.0, ~latitude=2.0, ()),
-        ~second=Position.makeLabels(~longitude=103.0, ~latitude=2.0, ()),
-        ~third=Position.makeLabels(~longitude=103.0, ~latitude=3.0, ()),
-        ~rest=[Position.makeLabels(~longitude=102.0, ~latitude=3.0, ())],
-        (),
-      ),
-      Polygon.(
-        LinearRing([
-          Shape.makeLabels(
-            ~startEnd=
-              Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
-            ~second=Position.makeLabels(~longitude=101.0, ~latitude=0.0, ()),
-            ~third=Position.makeLabels(~longitude=101.0, ~latitude=1.0, ()),
-            ~rest=[Position.makeLabels(~longitude=100.0, ~latitude=1.0, ())],
-            (),
-          ),
-          Shape.makeLabels(
-            ~startEnd=
-              Position.makeLabels(~longitude=100.2, ~latitude=0.2, ()),
-            ~second=Position.makeLabels(~longitude=100.2, ~latitude=0.8, ()),
-            ~third=Position.makeLabels(~longitude=100.8, ~latitude=0.8, ()),
-            ~rest=[Position.makeLabels(~longitude=100.8, ~latitude=0.2, ())],
-            (),
-          ),
-        ])
-      ),
-    ])
-  );
+let polygons =
+  GeoJSON.Geometry.[
+    Polygon.makeShape(
+      ~startEnd=Position.makeLabels(~longitude=102.0, ~latitude=2.0, ()),
+      ~second=Position.makeLabels(~longitude=103.0, ~latitude=2.0, ()),
+      ~third=Position.makeLabels(~longitude=103.0, ~latitude=3.0, ()),
+      ~rest=[Position.makeLabels(~longitude=102.0, ~latitude=3.0, ())],
+      (),
+    ),
+    Polygon.(
+      LinearRing([
+        Shape.makeLabels(
+          ~startEnd=Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
+          ~second=Position.makeLabels(~longitude=101.0, ~latitude=0.0, ()),
+          ~third=Position.makeLabels(~longitude=101.0, ~latitude=1.0, ()),
+          ~rest=[Position.makeLabels(~longitude=100.0, ~latitude=1.0, ())],
+          (),
+        ),
+        Shape.makeLabels(
+          ~startEnd=Position.makeLabels(~longitude=100.2, ~latitude=0.2, ()),
+          ~second=Position.makeLabels(~longitude=100.2, ~latitude=0.8, ()),
+          ~third=Position.makeLabels(~longitude=100.8, ~latitude=0.8, ()),
+          ~rest=[Position.makeLabels(~longitude=100.8, ~latitude=0.2, ())],
+          (),
+        ),
+      ])
+    ),
+  ];
+
+let multiPolygonGeometry = GeoJSON.Geometry.MultiPolygon(polygons);
 
 let invalidGeometry: Js.Json.t = [%raw
   {|
@@ -282,6 +282,9 @@ let geometryCollection =
     boundingBox: None,
   };
 
+let polygonGeometryCollection =
+  GeoJSON.(fromGeometries([polygonHolesGeometry]));
+
 let geoBoundingBoxJson: Js.Json.t = [%raw
   {|
   {
@@ -292,9 +295,9 @@ let geoBoundingBoxJson: Js.Json.t = [%raw
   |}
 ];
 
-let goeBoundingBox =
+let geoBoundingBox =
   GeoJSON.{
-    data: Data.Geometry(point),
+    data: Data.Geometry(pointGeometry),
     boundingBox:
       Some(
         BoundingBox.makeLabels(~w=-124.9, ~s=24.4, ~e=-66.8, ~n=49.4, ()),
@@ -353,10 +356,16 @@ let featureComplete =
   GeoJSON.(
     Feature.make(
       Some(Feature.ID.NumberID(1.0)),
-      Some(point),
+      Some(pointGeometry),
       Some(Js.Dict.fromList([("foo", Js.Json.string("bar"))])),
     )
   );
+
+let lineFeatureGeoJSON =
+  GeoJSON.(fromFeature(Feature.fromGeometry(lineGeometry)));
+
+let pointFeatureCollection =
+  GeoJSON.(fromFeatures([Feature.fromGeometry(pointGeometry)]));
 
 // This is the exact example used in section 1.5 of the specification
 let featureCollectionJson = [%raw

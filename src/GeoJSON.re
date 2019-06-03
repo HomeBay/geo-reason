@@ -15,29 +15,20 @@ module Data = {
   let geometryCollection = v => GeometryCollection(v);
   let featureCollection = v => FeatureCollection(v);
 
-  let getPoints =
-    fun
-    | Geometry(geo) => Geometry.getPoints(geo)
-    | Feature(feature) => Feature.getPoints(feature)
-    | GeometryCollection(geos) => List.flatMap(Geometry.getPoints, geos)
-    | FeatureCollection(features) =>
-      List.flatMap(Feature.getPoints, features);
+  let getGeometryObjects = (getInner, data) => {
+    let fromFeature = feature =>
+      Option.fold([], getInner, feature.Feature.geometry);
+    switch (data) {
+    | Geometry(geo) => getInner(geo)
+    | Feature(feature) => fromFeature(feature)
+    | GeometryCollection(geos) => List.flatMap(getInner, geos)
+    | FeatureCollection(features) => List.flatMap(fromFeature, features)
+    };
+  };
 
-  let getLines =
-    fun
-    | Geometry(geo) => Geometry.getLines(geo)
-    | Feature(feature) => Feature.getLines(feature)
-    | GeometryCollection(geos) => List.flatMap(Geometry.getLines, geos)
-    | FeatureCollection(features) =>
-      List.flatMap(Feature.getLines, features);
-
-  let getPolygons =
-    fun
-    | Geometry(geo) => Geometry.getPolygons(geo)
-    | Feature(feature) => Feature.getPolygons(feature)
-    | GeometryCollection(geos) => List.flatMap(Geometry.getPolygons, geos)
-    | FeatureCollection(features) =>
-      List.flatMap(Feature.getPolygons, features);
+  let getPoints = getGeometryObjects(Geometry.getPoints);
+  let getLines = getGeometryObjects(Geometry.getLines);
+  let getPolygons = getGeometryObjects(Geometry.getPolygons);
 
   let decode = {
     let decodeFromField =
@@ -70,14 +61,14 @@ module Data = {
         ("type", Js.Json.string("GeometryCollection")),
         (
           "geometries",
-          Js.Json.array(Array.(fromList(geos) |> map(Geometry.encode))),
+          Js.Json.array(List.(map(Geometry.encode, geos) |> toArray)),
         ),
       ]
     | FeatureCollection(features) => [
         ("type", Js.Json.string("FeatureCollection")),
         (
           "features",
-          Js.Json.array(Array.(fromList(features) |> map(Feature.encode))),
+          Js.Json.array(List.(map(Feature.encode, features) |> toArray)),
         ),
       ];
 };

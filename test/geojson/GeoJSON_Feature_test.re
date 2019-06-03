@@ -7,9 +7,13 @@ module Sample = GeoJSON_SampleData;
 
 describe("Feature", () => {
   test("fromGeometry", () =>
-    expect(Feature.fromGeometry(Sample.point))
+    expect(Feature.fromGeometry(Sample.pointGeometry))
     |> toEqual(
-         Feature.{id: None, geometry: Some(Sample.point), properties: None},
+         Feature.{
+           id: None,
+           geometry: Some(Sample.pointGeometry),
+           properties: None,
+         },
        )
   );
 
