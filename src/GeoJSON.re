@@ -15,6 +15,30 @@ module Data = {
   let geometryCollection = v => GeometryCollection(v);
   let featureCollection = v => FeatureCollection(v);
 
+  let getPoints =
+    fun
+    | Geometry(geo) => Geometry.getPoints(geo)
+    | Feature(feature) => Feature.getPoints(feature)
+    | GeometryCollection(geos) => List.flatMap(Geometry.getPoints, geos)
+    | FeatureCollection(features) =>
+      List.flatMap(Feature.getPoints, features);
+
+  let getLines =
+    fun
+    | Geometry(geo) => Geometry.getLines(geo)
+    | Feature(feature) => Feature.getLines(feature)
+    | GeometryCollection(geos) => List.flatMap(Geometry.getLines, geos)
+    | FeatureCollection(features) =>
+      List.flatMap(Feature.getLines, features);
+
+  let getPolygons =
+    fun
+    | Geometry(geo) => Geometry.getPolygons(geo)
+    | Feature(feature) => Feature.getPolygons(feature)
+    | GeometryCollection(geos) => List.flatMap(Geometry.getPolygons, geos)
+    | FeatureCollection(features) =>
+      List.flatMap(Feature.getPolygons, features);
+
   let decode = {
     let decodeFromField =
       fun
@@ -70,6 +94,10 @@ let fromGeometry = data => make(Data.Geometry(data), None);
 let fromGeometries = data => make(Data.GeometryCollection(data), None);
 let fromFeature = data => make(Data.Feature(data), None);
 let fromFeatures = data => make(Data.FeatureCollection(data), None);
+
+let getPoints = ({data}) => Data.getPoints(data);
+let getLines = ({data}) => Data.getLines(data);
+let getPolygons = ({data}) => Data.getPolygons(data);
 
 let decode =
   Decode.AsResult.OfParseError.(

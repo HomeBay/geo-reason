@@ -21,6 +21,33 @@ let multiPolygon = polygons => MultiPolygon(polygons);
 let pointFromLatLong = latLong => Point(Position.fromLatLong(latLong));
 let polygonFromShape = shape => Polygon(Polygon.Shape(shape));
 
+let getPoints =
+  fun
+  | Point(point) => [point]
+  | MultiPoint(points) => points
+  | LineString(_)
+  | Polygon(_)
+  | MultiLineString(_)
+  | MultiPolygon(_) => [];
+
+let getLines =
+  fun
+  | LineString(line) => [line]
+  | MultiLineString(lines) => lines
+  | Point(_)
+  | Polygon(_)
+  | MultiPoint(_)
+  | MultiPolygon(_) => [];
+
+let getPolygons =
+  fun
+  | Polygon(poly) => [poly]
+  | MultiPolygon(polygons) => polygons
+  | Point(_)
+  | LineString(_)
+  | MultiPoint(_)
+  | MultiLineString(_) => [];
+
 let decode = json => {
   let decodeCoords = (innerDecode, constructor) =>
     Decode.AsResult.OfParseError.(
