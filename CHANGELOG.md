@@ -1,10 +1,14 @@
-## Next
+## v0.3.1 (Jun 10, 2019)
+
+### :bug: Bug fixes
+
+- Bump `bs-decode` dependency to a version that fixes a stack overflow
 
 ## v0.3.0 (Jun 3, 2019)
 
 ### :sparkles: New features
 
-- Helpers to get geometry objects (`GeoJSON.getPoints`, `getLines`, `getPolygons)
+- Helpers to get geometry objects (`GeoJSON.getPoints`, `getLines`, `getPolygons`)
 
 ## v0.2.0 (May 30, 2019)
 
