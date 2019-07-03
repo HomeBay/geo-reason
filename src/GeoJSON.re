@@ -15,16 +15,15 @@ module Data = {
   let geometryCollection = v => GeometryCollection(v);
   let featureCollection = v => FeatureCollection(v);
 
-  let getGeometryObjects = (getInner, data) => {
-    let fromFeature = feature =>
-      Option.fold([], getInner, feature.Feature.geometry);
-    switch (data) {
+  let getGeometryObjects = getInner =>
+    fun
     | Geometry(geo) => getInner(geo)
-    | Feature(feature) => fromFeature(feature)
+    | Feature(feature) => Option.fold([], getInner, feature.geometry)
     | GeometryCollection(geos) => List.flatMap(getInner, geos)
-    | FeatureCollection(features) => List.flatMap(fromFeature, features)
-    };
-  };
+    | FeatureCollection(features) =>
+      features
+      |> List.map(feature => feature.Feature.geometry)
+      |> List.flatMap(Option.fold([], getInner));
 
   let getPoints = getGeometryObjects(Geometry.getPoints);
   let getLines = getGeometryObjects(Geometry.getLines);

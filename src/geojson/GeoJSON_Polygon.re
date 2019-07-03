@@ -18,57 +18,66 @@ module Shape = {
   let makeLabels = (~startEnd, ~second, ~third, ~rest=[], ()) =>
     make(startEnd, second, third, rest);
 
-  let fromArray = (xs, json) => {
+  let fromArray = xs => {
     let firstLastMatch =
       Option.eqBy(GeoJSON_Position.eq, Array.head(xs), Array.last(xs));
 
     switch (Array.init(xs) |> Option.getOrElse([||]) |> Array.toList) {
     | [startEnd, second, third, ...rest] when firstLastMatch =>
-      Result.ok(makeLabels(~startEnd, ~second, ~third, ~rest, ()))
-    | _ => Result.error(Decode.ParseError.Val(`ExpectedValidOption, json))
+      Some(makeLabels(~startEnd, ~second, ~third, ~rest, ()))
+    | _ => None
     };
   };
 
+  let fromList = xs => Array.fromList(xs) |> fromArray;
+
   let decode =
     Decode.AsResult.OfParseError.(
-      array(GeoJSON_Position.decode) |> flatMap(fromArray)
+      array(GeoJSON_Position.decode)
+      |> map(fromArray)
+      |> flatMap((v, json) =>
+           Result.fromOption(ParseError.Val(`ExpectedTuple(4), json), v)
+         )
     );
 
   let encode = ({startEnd, second, third, rest}) =>
-    Array.(
-      concat([|startEnd, second, third|], fromList(rest))
-      |> append(startEnd)
-      |> map(GeoJSON_Position.encode)
-      |> Js.Json.array
-    );
+    Array.concat([|startEnd, second, third|], Array.fromList(rest))
+    |> Array.append(startEnd)
+    |> Array.map(GeoJSON_Position.encode)
+    |> Js.Json.array;
 };
 
 type t =
   | Shape(Shape.t)
-  | LinearRing(list(Shape.t));
+  | LinearRing(Shape.t, Shape.t, list(Shape.t));
 
 let makeShape = (~startEnd, ~second, ~third, ~rest=?, ()) =>
   Shape(Shape.makeLabels(~startEnd, ~second, ~third, ~rest?, ()));
 
+let makeLinearRing = (~shape, ~hole, ~holes) =>
+  LinearRing(shape, hole, holes);
+
 let fromList =
   fun
-  | [] =>
-    Result.error(
-      Decode.ParseError.Val(`ExpectedValidOption, Js.Json.array([||])),
-    )
-  | [x] => Result.ok(Shape(x))
-  | xs => Result.ok(LinearRing(xs));
+  | [] => None
+  | [x] => Some(Shape(x))
+  | [shape, hole, ...holes] => Some(makeLinearRing(~shape, ~hole, ~holes));
 
 let fromArray = xs => fromList(Array.toList(xs));
 
 let decode =
   Decode.AsResult.OfParseError.(
-    array(Shape.decode) |> flatMap(fromArray >> const)
+    array(Shape.decode)
+    |> map(fromArray)
+    |> flatMap((v, json) =>
+         Result.fromOption(ParseError.Val(`ExpectedTuple(1), json), v)
+       )
   );
 
 let toArray =
   fun
   | Shape(s) => [|s|]
-  | LinearRing(l) => Array.fromList(l);
+  | LinearRing(shape, hole, holes) =>
+    Array.fromList([shape, hole, ...holes]);
 
 let encode = toArray >> Array.map(Shape.encode) >> Js.Json.array;

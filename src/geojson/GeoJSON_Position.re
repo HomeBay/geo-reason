@@ -38,7 +38,7 @@ let fromArray = (xs, json) =>
     Result.ok(makeLabels(~latitude, ~longitude, ()))
   | [longitude, latitude, altitude, ..._] =>
     Result.ok(makeLabels(~latitude, ~longitude, ~altitude, ()))
-  | _ => Result.error(Decode.ParseError.Val(`ExpectedValidOption, json))
+  | _ => Result.error(Decode.ParseError.Val(`ExpectedTuple(2), json))
   };
 
 let decode =

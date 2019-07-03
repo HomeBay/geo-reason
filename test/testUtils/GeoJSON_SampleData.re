@@ -104,7 +104,7 @@ let polygonHolesJson: Js.Json.t = [%raw
 let polygonHoles =
   GeoJSON.Geometry.(
     Polygon.(
-      LinearRing([
+      LinearRing(
         Shape.make(
           Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
           Position.makeLabels(~longitude=101.0, ~latitude=0.0, ()),
@@ -117,7 +117,8 @@ let polygonHoles =
           Position.makeLabels(~longitude=100.2, ~latitude=0.2, ()),
           [Position.makeLabels(~longitude=100.2, ~latitude=0.8, ())],
         ),
-      ])
+        [],
+      )
     )
   );
 
@@ -220,7 +221,7 @@ let polygons =
       (),
     ),
     Polygon.(
-      LinearRing([
+      LinearRing(
         Shape.makeLabels(
           ~startEnd=Position.makeLabels(~longitude=100.0, ~latitude=0.0, ()),
           ~second=Position.makeLabels(~longitude=101.0, ~latitude=0.0, ()),
@@ -235,7 +236,8 @@ let polygons =
           ~rest=[Position.makeLabels(~longitude=100.8, ~latitude=0.2, ())],
           (),
         ),
-      ])
+        [],
+      )
     ),
   ];
 

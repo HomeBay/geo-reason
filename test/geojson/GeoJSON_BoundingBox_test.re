@@ -9,7 +9,7 @@ module BoundingBox2D = BoundingBox.BoundingBox2D;
 module AltitudeRange = BoundingBox.AltitudeRange;
 
 let decodeFailure = json =>
-  Result.error(Decode.ParseError.Val(`ExpectedValidOption, json));
+  Result.error(Decode.ParseError.Val(`ExpectedTuple(4), json));
 
 describe("BoundingBox2D", () => {
   let (n, e, s, w) = (49.4, (-66.8), 24.4, (-124.9));

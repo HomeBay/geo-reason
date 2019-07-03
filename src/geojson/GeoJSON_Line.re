@@ -15,7 +15,7 @@ let twoPoints = (first, second) => make(first, second, []);
 let fromArray = (xs, json) =>
   switch (Array.toList(xs)) {
   | [first, second, ...rest] => Result.ok(make(first, second, rest))
-  | _ => Result.error(Decode.ParseError.Val(`ExpectedValidOption, json))
+  | _ => Result.error(Decode.ParseError.Val(`ExpectedTuple(2), json))
   };
 
 let decode =

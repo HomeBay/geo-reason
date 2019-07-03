@@ -48,7 +48,7 @@ let getPolygons =
   | MultiPoint(_)
   | MultiLineString(_) => [];
 
-let decode = json => {
+let decode = {
   let decodeCoords = (innerDecode, constructor) =>
     Decode.AsResult.OfParseError.(
       field("coordinates", map(constructor, innerDecode))
@@ -70,10 +70,9 @@ let decode = json => {
           Result.error(Decode.ParseError.Val(`ExpectedValidOption, json))
       );
 
-  json
-  |> Decode.AsResult.OfParseError.(
-       field("type", string) |> flatMap(decodeType)
-     );
+  Decode.AsResult.OfParseError.(
+    field("type", string) |> flatMap(decodeType)
+  );
 };
 
 let encodeFields = data => {

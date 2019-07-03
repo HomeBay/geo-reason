@@ -5,12 +5,12 @@ module ID = {
     | StringID(string)
     | NumberID(float);
 
+  let makeString = str => StringID(str);
+  let makeNumber = num => NumberID(num);
+
   let decode =
     Decode.AsResult.OfParseError.(
-      alt(
-        string |> map(v => StringID(v)),
-        floatFromNumber |> map(v => NumberID(v)),
-      )
+      alt(map(makeString, string), map(makeNumber, floatFromNumber))
     );
 
   let encode =

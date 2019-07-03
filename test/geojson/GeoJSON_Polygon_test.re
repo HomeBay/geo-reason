@@ -23,6 +23,9 @@ describe("Polygon", () => {
       (),
     );
 
+  let squareFromList =
+    Polygon.Shape.fromList([point1, point2, point3, point4, point1]);
+
   let squarePoly =
     Polygon.makeShape(
       ~startEnd=point1,
@@ -33,16 +36,18 @@ describe("Polygon", () => {
     );
 
   let nestedSquares =
-    Polygon.LinearRing([
-      square,
-      Polygon.Shape.makeLabels(
-        ~startEnd=Position.makeLabels(~latitude=0.8, ~longitude=100.8, ()),
-        ~second=Position.makeLabels(~latitude=0.2, ~longitude=100.8, ()),
-        ~third=Position.makeLabels(~latitude=0.2, ~longitude=100.2, ()),
-        ~rest=[Position.makeLabels(~latitude=0.8, ~longitude=100.2, ())],
-        (),
-      ),
-    ]);
+    Polygon.makeLinearRing(
+      ~shape=square,
+      ~hole=
+        Polygon.Shape.makeLabels(
+          ~startEnd=Position.makeLabels(~latitude=0.8, ~longitude=100.8, ()),
+          ~second=Position.makeLabels(~latitude=0.2, ~longitude=100.8, ()),
+          ~third=Position.makeLabels(~latitude=0.2, ~longitude=100.2, ()),
+          ~rest=[Position.makeLabels(~latitude=0.8, ~longitude=100.2, ())],
+          (),
+        ),
+      ~holes=[],
+    );
 
   let onePointJson = [%raw {| [[[100.0, 0.0]]]|}];
   let twoPointJson = [%raw {| [[[100.0, 0.0], [100.0, 0.0]]]|}];
@@ -92,6 +97,10 @@ describe("Polygon", () => {
            },
          ),
        )
+  );
+
+  test("Shape.fromList", () =>
+    expect(squareFromList) |> toEqual(Some(square))
   );
 
   test("decode success (triangle)", () =>

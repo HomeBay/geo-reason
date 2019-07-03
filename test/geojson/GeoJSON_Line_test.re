@@ -54,7 +54,7 @@ describe("Line", () => {
     expect(Line.decode(Js.Json.array([||])))
     |> toEqual(
          Result.error(
-           Decode.ParseError.Val(`ExpectedValidOption, Js.Json.array([||])),
+           Decode.ParseError.Val(`ExpectedTuple(2), Js.Json.array([||])),
          ),
        )
   );
@@ -63,7 +63,7 @@ describe("Line", () => {
     expect(Line.decode(invalidJson))
     |> toEqual(
          Result.error(
-           Decode.ParseError.Val(`ExpectedValidOption, invalidJson),
+           Decode.ParseError.Val(`ExpectedTuple(2), invalidJson),
          ),
        )
   );

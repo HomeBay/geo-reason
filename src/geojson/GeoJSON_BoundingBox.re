@@ -150,7 +150,7 @@ let fromArray = (xs, json) =>
     let bounds = BoundingBox2D.{n, e, s, w};
     let altitude = Some(AltitudeRange.make(high, low));
     Result.ok(make(bounds, altitude));
-  | _ => Result.error(Decode.ParseError.Val(`ExpectedValidOption, json))
+  | _ => Result.error(Decode.ParseError.Val(`ExpectedTuple(4), json))
   };
 
 let decode =

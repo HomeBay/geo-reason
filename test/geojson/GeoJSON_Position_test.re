@@ -6,7 +6,7 @@ module Position = GeoJSON.Geometry.Position;
 module LatLong = Position.LatLong;
 
 let decodeFailure = json =>
-  Result.error(Decode.ParseError.Val(`ExpectedValidOption, json));
+  Result.error(Decode.ParseError.Val(`ExpectedTuple(2), json));
 
 describe("LatLong", () => {
   let a = LatLong.makeLabels(~latitude=40.0, ~longitude=-105.1);
