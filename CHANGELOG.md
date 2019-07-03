@@ -10,6 +10,7 @@
 ### :sparkles: New features
 
 - Anywhere that `fromArray` exists, `fromList` should also be present
+- `Polygon.getOuterShape` takes a Polygon and always returns the `Shape.t` (ignoring any holes)
 
 ## v0.3.1 (Jun 10, 2019)
 

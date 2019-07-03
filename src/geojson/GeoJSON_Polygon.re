@@ -65,6 +65,11 @@ let fromList =
 
 let fromArray = xs => Array.toList(xs) |> fromList;
 
+let getOuterShape =
+  fun
+  | Shape(s)
+  | LinearRing(s, _, _) => s;
+
 let decode =
   Decode.AsResult.OfParseError.(
     array(Shape.decode)

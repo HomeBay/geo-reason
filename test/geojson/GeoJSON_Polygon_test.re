@@ -103,6 +103,14 @@ describe("Polygon", () => {
     expect(squareFromList) |> toEqual(Some(square))
   );
 
+  test("getOuterShape (shape)", () =>
+    expect(Polygon.getOuterShape(Polygon.Shape(square))) |> toEqual(square)
+  );
+
+  test("getOuterShape (linear ring)", () =>
+    expect(Polygon.getOuterShape(nestedSquares)) |> toEqual(square)
+  );
+
   test("decode success (triangle)", () =>
     expect(Polygon.decode(triangleJson)) |> toEqual(Result.ok(triangle))
   );
