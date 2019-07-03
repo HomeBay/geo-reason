@@ -114,6 +114,7 @@ describe("BoundingBox", () => {
   let bounds = BoundingBox2D.makeLabels(~n, ~e, ~s, ~w);
   let altitude = AltitudeRange.make(0.0, 100.0);
   let box = BoundingBox.make(bounds, None);
+  let boxFromList = BoundingBox.fromList([w, s, e, n]);
   let boxWithAltitude = BoundingBox.make(bounds, Some(altitude));
 
   let boxJson: Js.Json.t = [%raw {| [-124.9, 24.4, -66.8, 49.4] |}];
@@ -142,6 +143,10 @@ describe("BoundingBox", () => {
 
   test("from2D", () =>
     expect(BoundingBox.from2D(bounds)) |> toEqual(box)
+  );
+
+  test("fromList", () =>
+    expect(boxFromList) |> toEqual(Some(box))
   );
 
   test("encode (no altitude)", () =>

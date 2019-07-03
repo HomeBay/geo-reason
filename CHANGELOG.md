@@ -3,6 +3,13 @@
 ### :rotating_light: Breaking
 
 - `bs-decode`, `bs-abstract`, and `relude` are now `peerDependencies`, meaning you will need to install them on your own. This allows you to control their versions in a single place if you have multiple dependencies that depend on these libraries (so Bucklescript won't complain about duplicate versions)
+- The structure of the `Polygon.LinearRing` now enforces that it has at least one shape and at least one hole, which seems consistent with the spec
+- Many `ExpectedValidOption` decode errors are now `ExpectedTuple`, which only breaks things if you're matching on the specific type of decode error
+- Many `fromArray` functions previously expected a JSON argument. Now they consistently work with only an array of the appropriate type, and instead of returning a result of decode errors, they return options
+
+### :sparkles: New features
+
+- Anywhere that `fromArray` exists, `fromList` should also be present
 
 ## v0.3.1 (Jun 10, 2019)
 

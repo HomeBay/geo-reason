@@ -64,6 +64,15 @@ describe("Position", () => {
     expect(pos.Position.altitude) |> toEqual(None)
   );
 
+  test("fromArray (too short)", () =>
+    expect(Position.fromArray([||])) |> toEqual(None)
+  );
+
+  test("fromArray (too long)", () =>
+    expect(Position.fromArray([|latitude, longitude, latitude, longitude|]))
+    |> toEqual(None)
+  );
+
   test("decode success (no altitude)", () =>
     expect(Position.decode(posJson)) |> toEqual(Result.ok(pos))
   );

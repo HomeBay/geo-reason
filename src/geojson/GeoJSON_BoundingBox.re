@@ -143,19 +143,25 @@ let makeLabels = (~n, ~e, ~s, ~w, ~altitude=?, ()) =>
 
 let from2D = make(_, None);
 
-let fromArray = (xs, json) =>
-  switch (Array.toList(xs)) {
-  | [w, s, e, n] => Result.ok(makeLabels(~n, ~e, ~s, ~w, ()))
-  | [w, s, high, e, n, low] =>
+let fromArray = xs =>
+  switch (xs) {
+  | [|w, s, e, n|] => Some(makeLabels(~n, ~e, ~s, ~w, ()))
+  | [|w, s, high, e, n, low|] =>
     let bounds = BoundingBox2D.{n, e, s, w};
     let altitude = Some(AltitudeRange.make(high, low));
-    Result.ok(make(bounds, altitude));
-  | _ => Result.error(Decode.ParseError.Val(`ExpectedTuple(4), json))
+    Some(make(bounds, altitude));
+  | _ => None
   };
+
+let fromList = xs => List.toArray(xs) |> fromArray;
 
 let decode =
   Decode.AsResult.OfParseError.(
-    array(floatFromNumber) |> flatMap(fromArray)
+    array(floatFromNumber)
+    |> map(fromArray)
+    |> flatMap((v, json) =>
+         Result.fromOption(ParseError.Val(`ExpectedTuple(4), json), v)
+       )
   );
 
 let toArray = ({bounds, altitude}) => {

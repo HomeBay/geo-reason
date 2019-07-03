@@ -12,15 +12,20 @@ let makeLabels = (~first, ~second, ~rest=[], ()) =>
 
 let twoPoints = (first, second) => make(first, second, []);
 
-let fromArray = (xs, json) =>
-  switch (Array.toList(xs)) {
-  | [first, second, ...rest] => Result.ok(make(first, second, rest))
-  | _ => Result.error(Decode.ParseError.Val(`ExpectedTuple(2), json))
-  };
+let fromList =
+  fun
+  | [first, second, ...rest] => Some(make(first, second, rest))
+  | _ => None;
+
+let fromArray = xs => Array.toList(xs) |> fromList;
 
 let decode =
   Decode.AsResult.OfParseError.(
-    array(GeoJSON_Position.decode) |> flatMap(fromArray)
+    array(GeoJSON_Position.decode)
+    |> map(fromArray)
+    |> flatMap((v, json) =>
+         Result.fromOption(ParseError.Val(`ExpectedTuple(2), json), v)
+       )
   );
 
 let toList = ({first, second, rest}) => [first, second, ...rest];

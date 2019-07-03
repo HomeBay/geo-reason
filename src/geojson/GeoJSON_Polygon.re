@@ -63,7 +63,7 @@ let fromList =
   | [x] => Some(Shape(x))
   | [shape, hole, ...holes] => Some(makeLinearRing(~shape, ~hole, ~holes));
 
-let fromArray = xs => fromList(Array.toList(xs));
+let fromArray = xs => Array.toList(xs) |> fromList;
 
 let decode =
   Decode.AsResult.OfParseError.(
