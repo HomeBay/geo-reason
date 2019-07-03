@@ -11,7 +11,7 @@ GeoReason provides ReasonML types for working with [RFC-7946-compliant GeoJSON d
 
 Get the library from npm:
 
-`npm install geo-reason`
+`npm install --save geo-reason`
 
 Then update your `bsconfig.json`:
 
@@ -20,6 +20,8 @@ Then update your `bsconfig.json`:
   "geo-reason"
 ],
 ```
+
+Note that this library has some peerDependencies. If you don't already have the following libraries, you should also: `npm install --save bs-abstract bs-decode relude`. While this is a little more work up front, it helps you avoid duplicate versions of these packages which can cause issues while compiling.
 
 ## Purpose and Usage
 

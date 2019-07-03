@@ -22,12 +22,16 @@
   },
   "devDependencies": {
     "@glennsl/bs-jest": "^0.4.8",
+    "bs-abstract": "^0.17.0",
+    "bs-decode": "^0.8.0",
     "bs-platform": "^5.0.3",
-    "coveralls": "^3.0.4"
+    "coveralls": "^3.0.4",
+    "relude": "^0.17.0"
   },
-  "dependencies": {
-    "bs-decode": "^0.6.2",
-    "relude": "^0.12.1"
+  "peerDependencies": {
+    "bs-abstract": "^0.17.0",
+    "bs-decode": "^0.8.0",
+    "relude": "^0.17.0"
   },
   "jest": {
     "coveragePathIgnorePatterns": [

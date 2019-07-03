@@ -1,3 +1,9 @@
+## v0.4.0 (Jul 3, 2019)
+
+### :rotating_light: Breaking
+
+- `bs-decode`, `bs-abstract`, and `relude` are now `peerDependencies`, meaning you will need to install them on your own. This allows you to control their versions in a single place if you have multiple dependencies that depend on these libraries (so Bucklescript won't complain about duplicate versions)
+
 ## v0.3.1 (Jun 10, 2019)
 
 ### :bug: Bug fixes
