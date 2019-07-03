@@ -103,12 +103,25 @@ describe("Polygon", () => {
     expect(squareFromList) |> toEqual(Some(square))
   );
 
+  test("Shape.toList", () =>
+    expect(Polygon.Shape.toList(square))
+    |> toEqual([point1, point2, point3, point4, point1])
+  );
+
   test("getOuterShape (shape)", () =>
     expect(Polygon.getOuterShape(Polygon.Shape(square))) |> toEqual(square)
   );
 
   test("getOuterShape (linear ring)", () =>
     expect(Polygon.getOuterShape(nestedSquares)) |> toEqual(square)
+  );
+
+  test("eq (Shape, LinearRing)", () =>
+    expect(Polygon.eq(triangle, nestedSquares)) |> toEqual(false)
+  );
+
+  test("eq (LinearRing, Shape)", () =>
+    expect(Polygon.eq(nestedSquares, triangle)) |> toEqual(false)
   );
 
   test("decode success (triangle)", () =>

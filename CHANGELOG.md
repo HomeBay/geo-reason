@@ -11,6 +11,7 @@
 
 - Anywhere that `fromArray` exists, `fromList` should also be present
 - `Polygon.getOuterShape` takes a Polygon and always returns the `Shape.t` (ignoring any holes)
+- Add `Geometry.eq` (which means we now also have `eq` functions for `Polygon` and `Shape`)
 
 ## v0.3.1 (Jun 10, 2019)
 

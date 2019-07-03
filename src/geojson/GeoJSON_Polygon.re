@@ -40,11 +40,21 @@ module Shape = {
          )
     );
 
-  let encode = ({startEnd, second, third, rest}) =>
+  /**
+   * Consistent with the rules for the spec, where a shape should start and end
+   * with the same point (to form a closed shape), the `toList` and `toArray`
+   * functions add the `startEnd` position to the end as well as the beginning.
+   */
+  let toArray = ({startEnd, second, third, rest}) =>
     Array.concat([|startEnd, second, third|], Array.fromList(rest))
-    |> Array.append(startEnd)
-    |> Array.map(GeoJSON_Position.encode)
-    |> Js.Json.array;
+    |> Array.append(startEnd);
+
+  let toList = shape => toArray(shape) |> Array.toList;
+
+  let encode = shape =>
+    toArray(shape) |> Array.map(GeoJSON_Position.encode) |> Js.Json.array;
+
+  let eq = (a, b) => List.eqBy(GeoJSON_Position.eq, toList(a), toList(b));
 };
 
 type t =
@@ -69,6 +79,19 @@ let getOuterShape =
   fun
   | Shape(s)
   | LinearRing(s, _, _) => s;
+
+let eq = (a, b) =>
+  switch (a, b) {
+  | (Shape(a), Shape(b)) => Shape.eq(a, b)
+  | (LinearRing(shapeA, holeA, restA), LinearRing(shapeB, holeB, restB)) =>
+    List.eqBy(
+      Shape.eq,
+      [shapeA, holeA, ...restA],
+      [shapeB, holeB, ...restB],
+    )
+  | (Shape(_), LinearRing(_))
+  | (LinearRing(_), Shape(_)) => false
+  };
 
 let decode =
   Decode.AsResult.OfParseError.(

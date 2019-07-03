@@ -48,6 +48,22 @@ let getPolygons =
   | MultiPoint(_)
   | MultiLineString(_) => [];
 
+let eq = (a, b) =>
+  switch (a, b) {
+  | (Point(a), Point(b)) => Position.eq(a, b)
+  | (LineString(a), LineString(b)) => Line.eq(a, b)
+  | (Polygon(a), Polygon(b)) => Polygon.eq(a, b)
+  | (MultiPoint(a), MultiPoint(b)) => List.eqBy(Position.eq, a, b)
+  | (MultiLineString(a), MultiLineString(b)) => List.eqBy(Line.eq, a, b)
+  | (MultiPolygon(a), MultiPolygon(b)) => List.eqBy(Polygon.eq, a, b)
+  | (Point(_), _)
+  | (LineString(_), _)
+  | (Polygon(_), _)
+  | (MultiPoint(_), _)
+  | (MultiLineString(_), _)
+  | (MultiPolygon(_), _) => false
+  };
+
 let decode = {
   let decodeCoords = (innerDecode, constructor) =>
     Decode.AsResult.OfParseError.(

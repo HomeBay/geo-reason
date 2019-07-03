@@ -16,6 +16,73 @@ describe("Geometry", () => {
     |> toEqual(Geometry.(Polygon(Polygon.Shape(Sample.shape))))
   );
 
+  test("eq (two matching points)", () =>
+    expect(Geometry.eq(Sample.pointGeometry, Sample.pointGeometry))
+    |> toEqual(true)
+  );
+
+  test("eq (two matching lines)", () =>
+    expect(Geometry.eq(Sample.lineGeometry, Sample.lineGeometry))
+    |> toEqual(true)
+  );
+
+  test("eq (two matching polygons)", () =>
+    expect(
+      Geometry.eq(Sample.polygonHolesGeometry, Sample.polygonHolesGeometry),
+    )
+    |> toEqual(true)
+  );
+
+  test("eq (two matching multi-points)", () =>
+    expect(Geometry.eq(Sample.multiPoint, Sample.multiPoint))
+    |> toEqual(true)
+  );
+
+  test("eq (two matching multi-lines)", () =>
+    expect(Geometry.eq(Sample.multiLine, Sample.multiLine)) |> toEqual(true)
+  );
+
+  test("eq (two matching multi-polygons)", () =>
+    expect(
+      Geometry.eq(Sample.multiPolygonGeometry, Sample.multiPolygonGeometry),
+    )
+    |> toEqual(true)
+  );
+
+  test("eq (point, multi-point)", () =>
+    expect(Geometry.eq(Sample.pointGeometry, Sample.multiPoint))
+    |> toEqual(false)
+  );
+
+  test("eq (line, multi-line)", () =>
+    expect(Geometry.eq(Sample.lineGeometry, Sample.multiLine))
+    |> toEqual(false)
+  );
+
+  test("eq (polygon, multi-polygon)", () =>
+    expect(
+      Geometry.eq(Sample.polygonHolesGeometry, Sample.multiPolygonGeometry),
+    )
+    |> toEqual(false)
+  );
+
+  test("eq (multi-point, point)", () =>
+    expect(Geometry.eq(Sample.multiPoint, Sample.pointGeometry))
+    |> toEqual(false)
+  );
+
+  test("eq (multi-line, line)", () =>
+    expect(Geometry.eq(Sample.multiLine, Sample.lineGeometry))
+    |> toEqual(false)
+  );
+
+  test("eq (multi-polygon, polygon)", () =>
+    expect(
+      Geometry.eq(Sample.multiPolygonGeometry, Sample.polygonHolesGeometry),
+    )
+    |> toEqual(false)
+  );
+
   test("decode (point)", () =>
     expect(Geometry.decode(Sample.pointJson))
     |> toEqual(Result.ok(Sample.pointGeometry))
