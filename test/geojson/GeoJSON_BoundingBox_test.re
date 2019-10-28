@@ -25,6 +25,18 @@ describe("BoundingBox2D", () => {
     expect(box) |> toEqual(box')
   );
 
+  test("eq (same ref)", () =>
+    expect(BoundingBox2D.eq(box, box)) |> toEqual(true)
+  );
+
+  test("eq (different bounding boxes, same values", () =>
+    expect(BoundingBox2D.eq(box, box')) |> toEqual(true)
+  );
+
+  test("eq (false)", () =>
+    expect(BoundingBox2D.eq(box, boxb)) |> toEqual(false)
+  );
+
   test("ne", () =>
     expect(BoundingBox2D.ne(box)) |> toEqual(LatLong.make(n, e))
   );
@@ -147,6 +159,26 @@ describe("BoundingBox", () => {
 
   test("fromList", () =>
     expect(boxFromList) |> toEqual(Some(box))
+  );
+
+  test("eq (true, no altitude)", () =>
+    expect(BoundingBox.eq(box, box)) |> toEqual(true)
+  );
+
+  test("eq (true, with altitude)", () =>
+    expect(BoundingBox.eq(boxWithAltitude, boxWithAltitude))
+    |> toEqual(true)
+  );
+
+  test("eq (false when one is missing altitude)", () =>
+    expect(BoundingBox.eq(box, boxWithAltitude)) |> toEqual(false)
+  );
+
+  test("eq (false when box differs)", () =>
+    expect(
+      BoundingBox.(eq(box, makeLabels(~n=1.1, ~e=2.2, ~s=3.3, ~w=4.4, ()))),
+    )
+    |> toEqual(false)
   );
 
   test("encode (no altitude)", () =>

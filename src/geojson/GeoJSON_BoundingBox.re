@@ -19,6 +19,8 @@ module BoundingBox2D = {
       w: point.longitude,
     };
 
+  let eq = ({n, e, s, w}, b) => n == b.n && e == b.e && s == b.s && w == b.w;
+
   let ne = ({n, e}) =>
     GeoJSON_Position.LatLong.makeLabels(~latitude=n, ~longitude=e);
 
@@ -154,6 +156,10 @@ let fromArray = xs =>
   };
 
 let fromList = xs => List.toArray(xs) |> fromArray;
+
+let eq = ({bounds, altitude}, b) =>
+  BoundingBox2D.eq(bounds, b.bounds)
+  && Option.eqBy(AltitudeRange.eq, altitude, b.altitude);
 
 let decode =
   Decode.AsResult.OfParseError.(
